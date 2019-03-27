@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">SmartDiaper</string>
+    <!--标题栏-->
+
+    <!--蓝牙配对-->
+    <string name="find_box">正在寻找SmartBox</string>
+    <string name="device_scan">正在扫描</string>
+    <string name="ble_name">SmartBox</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+</resources>

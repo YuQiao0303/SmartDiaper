@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="@color/colorPrimary"
+    android:id="@+id/activity_find_diaper"
+    tools:context=".activity.FindDiaperActivity">
+    <Button
+        android:text="跳过 >"
+        android:layout_marginRight="10dp"
+        android:layout_alignParentRight="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/skipFind"
+        android:textColor="#ffffff"
+        android:background="@null"
+        android:textSize="18sp" />
+
+    <TextView
+        android:text="@string/find_box"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/hintText"
+        android:textColor="#ffffff"
+        android:textSize="20sp"
+        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="15dp" />
+    <TextView
+        android:text=""
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/deviceResult"
+        android:textColor="#ffffff"
+        android:textSize="16sp"
+        android:layout_below="@id/hintText"
+        android:layout_centerHorizontal="true" />
+    <TextView
+        android:text=""
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/deviceResult_mac"
+        android:textColor="#ffffff"
+        android:textSize="16sp"
+        android:layout_below="@id/deviceResult"
+        android:layout_centerHorizontal="true" />
+    <Button
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/scan"
+        android:layout_below="@id/deviceResult_mac"
+        android:hint="扫描"/>
+
+
+</RelativeLayout>

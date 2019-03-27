@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="50sp"
+    android:background="@drawable/layout_padding">
+
+    <LinearLayout
+        android:id="@+id/bottombar_timeline"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="5sp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="center"
+            app:srcCompat="@drawable/btm_service_icon" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="时间轴"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/bottombar_home"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="5sp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="22dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center"
+            app:srcCompat="@drawable/btm_home_icon" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="首页"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/bottombar_setup"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="5sp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="center"
+            app:srcCompat="@drawable/btm_person_icon" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="我的"
+            android:textSize="12sp" />
+    </LinearLayout>
+</LinearLayout>
