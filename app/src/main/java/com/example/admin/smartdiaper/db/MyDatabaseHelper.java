@@ -7,7 +7,7 @@ import android.widget.Toast;
 
 public class MyDatabaseHelper extends SQLiteOpenHelper {
     //建表的SQL语句
-    public static final String CREATE_TABLE_RECORD = "create table Record ("
+    public static final String CREATE_TABLE_RECORD = "create table tbl_record ("
             + "id integer primary key autoincrement, "
             + "TimeStamp DEFAULT(datetime('now', 'localtime')))";
 
@@ -46,4 +46,5 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("drop table if exists Record");
         onCreate(db);
     }
+
 }
