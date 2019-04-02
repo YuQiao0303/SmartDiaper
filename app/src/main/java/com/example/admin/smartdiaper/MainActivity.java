@@ -2,6 +2,7 @@ package com.example.admin.smartdiaper;
 
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -25,7 +26,7 @@ import com.example.admin.smartdiaper.db.MyDatabaseHelper;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
-    private MyDatabaseHelper dbHelper;
+
     private BleDevice bleDevice;//蓝牙设备
     private final static String LOG_TAG = "MainActivity";
     private View homeView, timelineView, setupView;
@@ -36,33 +37,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //初始化数据库
-        //initDatabase();
+
         //设置三个Fragment
         setView();
     }
 
 
 
-    /**-----------------------------------------------------------------------
-     *                       数据库相关
-     *----------------------------------------------------------------------*/
-    private void initDatabase(){
-        //创建数据库
-        dbHelper = new MyDatabaseHelper(this, "SmartDiaper.db", null, 1);
-        dbHelper.getWritableDatabase();   //检测有没有该名字的数据库，若没有则创建，同时调用dbHelper 的 onCreate 方法；若有就不会再创建了
-        //添加测试数据
-        addTestData();
-    }
-    private void addTestData(){
-        SQLiteDatabase db = dbHelper.getWritableDatabase();   //获得该数据库实例
-        ContentValues values = new ContentValues();
 
-//        values.put("name", "The Da Vinci Code");
-//        values.put("author", "Dan Brown");
-        db.insert("tbl_record",null,values);
-        Log.d(TAG, "addTestData: 成功添加数据！");
-    }
 
     /**-----------------------------------------------------------------------
      *                       设置Fragment相关

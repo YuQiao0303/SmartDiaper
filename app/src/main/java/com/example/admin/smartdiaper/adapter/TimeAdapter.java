@@ -11,8 +11,9 @@ import android.widget.TextView;
 
 import com.example.admin.smartdiaper.R;
 import com.example.admin.smartdiaper.bean.TimelineItem;
+import com.example.admin.smartdiaper.utils.DateTimeUtil;
 import com.example.admin.smartdiaper.utils.DensityUtil;
-import com.example.admin.smartdiaper.utils.TimeFormat;
+
 
 import java.util.List;
 
@@ -74,7 +75,8 @@ public class TimeAdapter extends RecyclerView.Adapter{
                 dotImage.setImageResource(R.mipmap.time_node_red);
 
             //显示时间
-            txtDateTime.setText(TimeFormat.format("yyyy.MM.dd", timelineItem.getTime()) );
+            txtDateTime.setText(DateTimeUtil.toymdhms(timelineItem.getTime()));
+//            txtDateTime.setText(TimeFormat.format("yyyy.MM.dd", timelineItem.getTime()) );
 
 
             //竖线

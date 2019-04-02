@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 /**
  * 日期转换 wen
  */
-public class DateUtil {
+public class DateTimeUtil {
 
     private static long duration;
 
@@ -17,17 +17,17 @@ public class DateUtil {
 
     public static String timestamp2y(long timestamp){
         SimpleDateFormat format = new SimpleDateFormat("yyyy");
-        return format.format(timestamp*1000);
+        return format.format(timestamp);
     }
 
     public static String timestamp2ymd(long timestamp){
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        return format.format(timestamp*1000);
+        return format.format(timestamp);
     }
 
     public static String toymdhms(long timestamp){
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return format.format(timestamp*1000);
+        return format.format(timestamp);
     }
 
     /**
@@ -36,7 +36,7 @@ public class DateUtil {
      * @return
      */
     public static String formateDuration(long duration1) {
-        DateUtil.duration = duration1*1000;
+        DateTimeUtil.duration = duration1;
         //定义常量
         long HOUR = 1000*60*60;//1小时
         long MINUTE = 1000*60;//1分钟

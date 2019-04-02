@@ -3,15 +3,26 @@ package com.example.admin.smartdiaper.db;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 import android.widget.Toast;
 
-public class MyDatabaseHelper extends SQLiteOpenHelper {
-    //建表的SQL语句
-    public static final String CREATE_TABLE_RECORD = "create table tbl_record ("
-            + "id integer primary key autoincrement, "
-            + "TimeStamp DEFAULT(datetime('now', 'localtime')))";
+import static com.example.admin.smartdiaper.constant.Constant.DB_PREDICTION_NAME;
+import static com.example.admin.smartdiaper.constant.Constant.DB_RECORD_NAME;
 
-    //
+public class MyDatabaseHelper extends SQLiteOpenHelper {
+    private static final String TAG = "MyDatabaseHelper";
+    //建表的SQL语句
+    public static final String CREATE_TABLE_RECORD = "create table "+DB_RECORD_NAME+" ("
+            + "id integer primary key autoincrement, "
+            + "time integer) ";  //1970.1.1  0点至今的毫秒数
+
+    public static final String CREATE_TABLE_PREDICTION = "create table "+DB_PREDICTION_NAME+" ("
+            + "id integer primary key autoincrement, "
+            + "time integer) ";  //1970.1.1  0点至今的毫秒数
+
+    //删表语句
+    public static final String DROP_TABLE_RECORD ="drop table if exists "+DB_RECORD_NAME;
+    public static final String DROP_TABLE_PREDICTION = "drop table if exitsts" + DB_PREDICTION_NAME;
     private Context mContext;
     //构造方法
     public MyDatabaseHelper(Context context, String name,
@@ -31,7 +42,8 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE_RECORD);  //
-        Toast.makeText(mContext, "Create Table Record succeeded", Toast.LENGTH_SHORT).show();
+        db.execSQL(CREATE_TABLE_PREDICTION);
+        Log.d(TAG, "onCreate: 建表成功！");
     }
 
     /**
@@ -43,7 +55,8 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("drop table if exists Record");
+        db.execSQL(DROP_TABLE_RECORD);
+        db.execSQL(DROP_TABLE_PREDICTION);
         onCreate(db);
     }
 

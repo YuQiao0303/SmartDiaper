@@ -7,24 +7,22 @@ package com.example.admin.smartdiaper.bean;
 
 public class TimelineItem {
 
-    private String time;
+    private long time;
     private String title;
-
-
 
     private boolean predicted = false;
 
-    public TimelineItem(String time, boolean predicted, String title) {
+    public TimelineItem(long time, boolean predicted, String title) {
         this.title = title;
         this.predicted = predicted;
         this.time = time;
     }
 
-    public String getTime() {
+    public long getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(long time) {
         this.time = time;
     }
 
