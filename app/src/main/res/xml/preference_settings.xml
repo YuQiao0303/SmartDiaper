@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="root_title"
+    >
+
+    <!-- 模式设置 -->
+    <PreferenceCategory
+        android:key="mode"
+        android:summary="当您打开省电模式时，无法查看实时温度，但仍可以提醒~"
+        android:title="模式设置">
+        <SwitchPreference
+            android:key="save_power"
+            android:title="省电模式"/>
+
+    </PreferenceCategory>
+    <!-- 提醒设置 -->
+    <PreferenceCategory
+        android:key="remind"
+        android:title="提醒设置">
+        <SwitchPreference
+            android:key="violation"
+            android:title="震动"/>
+        <SwitchPreference
+            android:key="ring"
+            android:title="响铃"/>
+        <ListPreference
+            android:key="ring_music"
+            android:title="铃声"
+
+            android:dialogTitle="请选择提醒铃声"
+            android:entries="@array/ring_music_name"
+            android:entryValues="@array/ring_music_id"/>
+    </PreferenceCategory>
+
+
+
+</PreferenceScreen>

@@ -79,7 +79,7 @@ public class TimeLineFragment extends Fragment{
         dbHelper = new MyDatabaseHelper(this.getContext(), "SmartDiaper.db", null, 1);
         dbHelper.getWritableDatabase();   //检测有没有该名字的数据库，若没有则创建，同时调用dbHelper 的 onCreate 方法；若有就不会再创建了
         //添加测试数据
-        addTestData();
+        //addTestData();
     }
     private void addTestData(){
         SQLiteDatabase db = dbHelper.getWritableDatabase();   //获得该数据库实例
@@ -104,7 +104,7 @@ public class TimeLineFragment extends Fragment{
     }
 
     /**-----------------------------------------------------------------------
-     *                       UI相关
+     *                       数据相关
      *----------------------------------------------------------------------*/
     private void initData() {
         SQLiteDatabase db = dbHelper.getWritableDatabase();

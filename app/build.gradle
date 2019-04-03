@@ -29,7 +29,10 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    implementation files('libs/FastBLE-2.3.4.jar')
-    implementation 'com.vivian.widgets:TimeLineItemDecoration:1.5'
+
+    implementation files('libs/FastBLE-2.3.4.jar')  //Bluetooth
+    implementation group: 'com.android.support', name: 'preference-v7', version: '28.0.0'  //preferences
+    implementation 'com.android.support:preference-v14:28.0.0'  //material design preferences
+
 
 }
