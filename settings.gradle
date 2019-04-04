@@ -1,1 +1,1 @@
-include ':app',':ZBLibrary',':FastBleLib'
+include ':app',':ZBLibrary',':FastBleLib', ':SeekbarPreferenceLib'

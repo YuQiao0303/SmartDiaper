@@ -7,11 +7,11 @@
     <!-- 模式设置 -->
     <PreferenceCategory
         android:key="mode"
-        android:summary="当您打开省电模式时，无法查看实时温度，但仍可以提醒~"
         android:title="模式设置">
         <SwitchPreference
             android:key="save_power"
-            android:title="省电模式"/>
+            android:title="省电模式"
+            android:summary="当您打开省电模式时，无法查看实时温度，但仍可以提醒~"/>
 
     </PreferenceCategory>
     <!-- 提醒设置 -->
@@ -31,6 +31,14 @@
             android:dialogTitle="请选择提醒铃声"
             android:entries="@array/ring_music_name"
             android:entryValues="@array/ring_music_id"/>
+
+
+        <me.zhanghai.android.seekbarpreference.SeekBarPreference
+            android:key="ring_volume"
+            android:max="100"
+            android:defaultValue="50"
+            android:title="音量"
+            android:summary="[ %1$s%% ]" />
     </PreferenceCategory>
 
 
