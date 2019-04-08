@@ -11,16 +11,14 @@
 
     <!--铃声-->
     <string-array name="ring_music_name">
-        <item>music 1</item>
-        <item>music 2</item>
-        <item>music 3</item>
-        <item>music 4</item>
+        <item>Maid with the Flaxen Hair</item>
+        <item>Kalimba</item>
+        <item>Sleep Away</item>
     </string-array>
     <string-array name="ring_music_id">
+        <item>0</item>
         <item>1</item>
         <item>2</item>
-        <item>3</item>
-        <item>4</item>
     </string-array>
 
 

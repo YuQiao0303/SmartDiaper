@@ -35,8 +35,12 @@ public class HomeFragment extends Fragment{
 
     //音频相关
     private SoundPool soundPool;
-    private int soundId;
-    private boolean loadFinished = false;
+    private int soundId[] = {0,0,0};  //sound[0] 是test_music0 加载后在sound pool中的id
+    private int playingId;  //正在播放的音频在音频池中的id
+    private boolean[] loadFinished = {false,false,false};  //loadFinished[0]是test_music0.mp3是否加载完毕
+    private boolean playSuccess = false;
+    private float volumeF;
+
 
     public HomeFragment() {
         // Required empty public constructor
@@ -86,7 +90,9 @@ public class HomeFragment extends Fragment{
                 if(preferences.getBoolean("ring",false)){
                     int volume = preferences.getInt("ring_volume",100);
                     Log.d(TAG, "onClick: get volume from preference:" + volume);
-                    ring(volume);
+                    int index = Integer.valueOf(preferences.getString("ring_music","0")).intValue();
+                    Log.d(TAG, "onClick: get musicId from preference:" + index);
+                    ring(index,volume);
                 }
 
             }
@@ -182,14 +188,30 @@ public class HomeFragment extends Fragment{
             soundPool = new SoundPool(3, AudioManager.STREAM_MUSIC,0);
         }
 
-        //加载音频
-        soundId = soundPool.load(this.getContext(), R.raw.test_music, 1);  //priority 目前没用
+        //加载全部音频
+        //priority 目前没用
+        soundId[0] = soundPool.load(this.getContext(), R.raw.test_music0, 1);
+        soundId[1] = soundPool.load(this.getContext(), R.raw.test_music1, 1);
+        soundId[2] = soundPool.load(this.getContext(), R.raw.test_music2, 1);
+
         //设置音频加载完毕监听事件
         soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
             @Override
             public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-                Log.d(TAG, "onLoadComplete: 音频池资源id为："+ soundId + "的资源加载完成");
-                loadFinished = true;
+                int i;
+                for(i=0;i<3;i++)
+                {
+                    if(soundId[i] == sampleId)
+                        break;
+                }
+                loadFinished[i] = true;
+                Log.d(TAG, "onLoadComplete: 音频池资源id为："+ sampleId + "铃声编号为 "+ i +" 的资源加载完成");
+                //如果应该播放当前音乐，但刚才还没加载完，就播放
+                if(sampleId == playingId && playSuccess == false)
+                {
+                    soundPool.play(playingId, volumeF, volumeF, 0, -1, 1.0f);
+                    playSuccess = true;
+                }
             }
         });
 
@@ -197,21 +219,28 @@ public class HomeFragment extends Fragment{
     /**
      * 手机响铃
      */
-    public void ring(int volume){
+    public void ring(int index,int volume){
 
         //soundID参数为资源ID；
         // leftVolume和rightVolume个参数为左右声道的音量，从大到小取0.0f~1.0f之间的值；
         // priority为音频质量，暂时没有实际意义，传0即可；
         // loop为循环次数，0为播放一次，-1为无线循环，其他正数+1为播放次数，如传递3，循环播放4次；
         // rate为播放速率，从大到小取0.0f~2.0f，1.0f为正常速率播放。
-        float volumeF = ((float)volume)/100;
-        Log.d(TAG, "ring: volume + "+volume +"volumeF = " + volumeF);
-        if(loadFinished)
-            soundPool.play(soundId,volumeF,volumeF,0,-1,1.0f);
+        volumeF = ((float)volume)/100;
+        playingId = soundId[index];   //在音频池中的id
+        Log.d(TAG, "ring: volume "+volume +"volumeF = " + volumeF);
+        Log.d(TAG, "ring: index" + index);
+        if(loadFinished[index]) {
+            playingId = soundPool.play(soundId[index], volumeF, volumeF, 0, -1, 1.0f);
+            playSuccess = true;
+        }
+        else
+            playSuccess = false;
     }
 
     /**
      * 销毁时释放音频池资源
+     * 因为每次onCreate 都要重新load
      */
     @Override
     public void onDestroy(){
@@ -220,7 +249,8 @@ public class HomeFragment extends Fragment{
             soundPool.release();
             soundPool = null;
         }
-        Log.d(TAG, "onDestroy: ");
+//        soundPool.stop(playingId);
+//        Log.d(TAG, "onDestroy: stop  " + playingId);
         super.onDestroy();
     }
 }
