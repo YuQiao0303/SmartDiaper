@@ -2,8 +2,11 @@ package com.example.admin.smartdiaper.activity;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+
 import android.preference.PreferenceManager;
+import android.support.v14.preference.SwitchPreference;
 import android.support.v4.app.Fragment;
+import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceScreen;
@@ -37,15 +40,25 @@ public class SetupFragment extends PreferenceFragmentCompat {
         }
     }
 
-//    //监听事件
-//    @Override
-//    public boolean onPreferenceTreeClick(Preference preference){
-//        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-//        Log.d(TAG, "onPreferenceTreeClick: " + preference.getKey() + "=" +preference.toString());
-//        Log.d(TAG, ""+preferences.getBoolean(preference.getKey(),true));
-//
-//        return super.onPreferenceTreeClick(preference);
-//    }
+    //监听事件
+    @Override
+    public boolean onPreferenceTreeClick(Preference preference){
+        switch (preference.getKey())
+        {
+            //设置铃声和音量是否可选
+            case "ring" :{
+                SwitchPreference ring = (SwitchPreference)findPreference("ring");
+                ListPreference ringMusic = (ListPreference)findPreference("ring_music");
+                SeekBarPreference ringVolume = (SeekBarPreference)findPreference("ring_volume");
+
+                ringMusic.setEnabled(ring.isChecked());
+                ringVolume.setEnabled(ring.isChecked());
+                break;
+            }
+        }
+
+        return super.onPreferenceTreeClick(preference);
+    }
 
 //    @Override
 //    public View onCreateView(LayoutInflater inflater, ViewGroup container,
