@@ -1,5 +1,6 @@
 package com.example.admin.smartdiaper.db;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -41,9 +42,29 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onCreate(SQLiteDatabase db) {
+        //建表
         db.execSQL(CREATE_TABLE_RECORD);  //
         db.execSQL(CREATE_TABLE_PREDICTION);
         Log.d(TAG, "onCreate: 建表成功！");
+        //insert 数据
+        ContentValues values = new ContentValues();
+        //insert 历史记录
+        int i;
+        for(i = 0;i<10;i++)
+        {
+            values.put("time", i*1000*3600);
+            db.insert(DB_RECORD_NAME,null,values);
+            values.clear();
+        }
+        //insert 预测数据
+        for(i = 10;i<13;i++)
+        {
+            values.put("time", i*1000*3600);
+            db.insert(DB_PREDICTION_NAME,null,values);
+            values.clear();
+        }
+
+        Log.d(TAG, "addTestData: 成功添加数据！");
     }
 
     /**
