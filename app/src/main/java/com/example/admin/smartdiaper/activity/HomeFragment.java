@@ -23,6 +23,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Switch;
 
 import com.example.admin.smartdiaper.MainActivity;
 import com.example.admin.smartdiaper.R;
@@ -60,15 +61,8 @@ public class HomeFragment extends Fragment{
             * 渠道名称是给用户看的，需要能够表达清楚这个渠道的用途。
             * 重要等级的不同则会决定通知的不同行为，当然这里只是初始状态下的重要等级，用户可以随时手动更改某个渠道的重要等级，App是无法干预的。这里设成low是为了不响铃
             * */
-            String channelId = "remind";
-            String channelName = "排尿提醒";
-            int importance = NotificationManager.IMPORTANCE_LOW;
-            createNotificationChannel(channelId, channelName, importance);
-
-            channelId = "other";
-            channelName = "其他消息";
-            importance = NotificationManager.IMPORTANCE_LOW;
-            createNotificationChannel(channelId, channelName, importance);
+            createNotificationChannel("remind", "排尿提醒", NotificationManager.IMPORTANCE_LOW);
+            createNotificationChannel("other", "其他消息", NotificationManager.IMPORTANCE_LOW);
         }
 
     }
@@ -97,7 +91,27 @@ public class HomeFragment extends Fragment{
 
             }
         });
-
+        //省电模式
+        final Switch savePower = view.findViewById(R.id.save_power_home);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        savePower.setChecked(preferences.getBoolean("save_power",false));
+        Log.d(TAG, "onCreateView: save_Power from preference+" + preferences.getBoolean("save_power",false));
+        savePower.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+                SharedPreferences.Editor editor = preferences.edit();
+                if(savePower.isChecked())
+                {
+                    editor.putBoolean("save_power",true);
+                }
+                else{
+                    editor.putBoolean("save_power",false);
+                }
+                editor.commit();
+                Log.d(TAG, "onClick: save_power from home " + savePower.isChecked());
+            }
+        });
         return view;
     }
 
