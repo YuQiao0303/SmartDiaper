@@ -19,7 +19,7 @@
         android:key="remind"
         android:title="提醒设置">
         <SwitchPreference
-            android:key="violation"
+            android:key="vibrate"
             android:title="震动"/>
         <SwitchPreference
             android:key="ring"

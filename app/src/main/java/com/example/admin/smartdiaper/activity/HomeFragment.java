@@ -7,12 +7,14 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
@@ -69,16 +71,27 @@ public class HomeFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         Button sendNotice = view.findViewById(R.id.send_notice);
         sendNotice.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
                 sendNotification();
-                vibrate();
-                ring();
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+                if(preferences.getBoolean("vibrate",false)){
+                    vibrate();
+                }
+                if(preferences.getBoolean("ring",false)){
+                    int volume = preferences.getInt("ring_volume",100);
+                    Log.d(TAG, "onClick: get volume from preference:" + volume);
+                    ring(volume);
+                }
+
             }
         });
+
         return view;
     }
 
@@ -184,15 +197,17 @@ public class HomeFragment extends Fragment{
     /**
      * 手机响铃
      */
-    public void ring(){
+    public void ring(int volume){
 
         //soundID参数为资源ID；
         // leftVolume和rightVolume个参数为左右声道的音量，从大到小取0.0f~1.0f之间的值；
         // priority为音频质量，暂时没有实际意义，传0即可；
         // loop为循环次数，0为播放一次，-1为无线循环，其他正数+1为播放次数，如传递3，循环播放4次；
         // rate为播放速率，从大到小取0.0f~2.0f，1.0f为正常速率播放。
-        while(!loadFinished);
-            soundPool.play(soundId,1.0f,1.0f,0,-1,1.0f);
+        float volumeF = ((float)volume)/100;
+        Log.d(TAG, "ring: volume + "+volume +"volumeF = " + volumeF);
+        if(loadFinished)
+            soundPool.play(soundId,volumeF,volumeF,0,-1,1.0f);
     }
 
     /**
@@ -205,6 +220,7 @@ public class HomeFragment extends Fragment{
             soundPool.release();
             soundPool = null;
         }
+        Log.d(TAG, "onDestroy: ");
         super.onDestroy();
     }
 }
