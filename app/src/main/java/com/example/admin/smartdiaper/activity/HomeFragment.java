@@ -26,6 +26,7 @@ import android.widget.Button;
 import android.widget.Switch;
 
 import com.example.admin.smartdiaper.MainActivity;
+import com.example.admin.smartdiaper.MyApplication;
 import com.example.admin.smartdiaper.R;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
@@ -147,11 +148,11 @@ public class HomeFragment extends Fragment{
      */
     public void sendNotification() {
         //设置跳转到MainActivity 的 pendingintent，作为这条通知的点击事件
-        Intent intent = new Intent(this.getContext(), MainActivity.class);
-        PendingIntent pi = PendingIntent.getActivity(this.getContext(),0,intent,0);
+        Intent intent = new Intent(MyApplication.getContext(), MainActivity.class);
+        PendingIntent pi = PendingIntent.getActivity(MyApplication.getContext(),0,intent,0);
 
         NotificationManager manager = (NotificationManager) getActivity().getSystemService(NOTIFICATION_SERVICE);
-        Notification notification = new NotificationCompat.Builder(this.getContext(), "remind")  //注意了这里需要一个channelId
+        Notification notification = new NotificationCompat.Builder(MyApplication.getContext(), "remind")  //注意了这里需要一个channelId
                 .setContentTitle("宝宝尿了~")
                 .setContentText("可以更换纸尿裤了哦~")
                 .setSmallIcon(R.mipmap.ic_launcher_round)
@@ -177,7 +178,7 @@ public class HomeFragment extends Fragment{
         //创建震动服务对象
         Vibrator mVibrator;
         //获取手机震动服务
-        mVibrator=(Vibrator)this.getContext().getSystemService(Service.VIBRATOR_SERVICE);
+        mVibrator=(Vibrator)MyApplication.getContext().getSystemService(Service.VIBRATOR_SERVICE);
         long[] patter = {0, 500, 500, 500, 500, 500};  //静止xxms，震动xxms，静止xxms，震动xxms
         mVibrator.vibrate(patter, -1);  //循环，表示从数组的哪个下标开始循环，如果是-1表示不循环
 
@@ -204,9 +205,9 @@ public class HomeFragment extends Fragment{
 
         //加载全部音频
         //priority 目前没用
-        soundId[0] = soundPool.load(this.getContext(), R.raw.test_music0, 1);
-        soundId[1] = soundPool.load(this.getContext(), R.raw.test_music1, 1);
-        soundId[2] = soundPool.load(this.getContext(), R.raw.test_music2, 1);
+        soundId[0] = soundPool.load(MyApplication.getContext(), R.raw.test_music0, 1);
+        soundId[1] = soundPool.load(MyApplication.getContext(), R.raw.test_music1, 1);
+        soundId[2] = soundPool.load(MyApplication.getContext(), R.raw.test_music2, 1);
 
         //设置音频加载完毕监听事件
         soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {

@@ -9,7 +9,10 @@
 
 
 
+    <!--音量-->
+    <string name="ring_volume_default">100%</string>
     <!--铃声-->
+    <string name = "ring_music_default">Maid with the Flaxen Hair</string>
     <string-array name="ring_music_name">
         <item>Maid with the Flaxen Hair</item>
         <item>Kalimba</item>

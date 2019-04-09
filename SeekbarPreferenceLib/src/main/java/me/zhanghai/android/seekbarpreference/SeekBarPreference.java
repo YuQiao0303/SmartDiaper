@@ -134,17 +134,18 @@ public class SeekBarPreference extends DialogPreference {
     }
 
     /**
+     * commented by YuQiao0303
      * {@inheritDoc}
      */
-    @Override
-    public CharSequence getSummary() {
-        CharSequence summary = super.getSummary();
-        if (summary == null) {
-            return null;
-        } else {
-            return String.format(summary.toString(), getProgress(), mSeekBar.getMax());
-        }
-    }
+//    @Override
+//    public CharSequence getSummary() {
+//        CharSequence summary = super.getSummary();
+//        if (summary == null) {
+//            return null;
+//        } else {
+//            return String.format(summary.toString(), getProgress(), mSeekBar.getMax());
+//        }
+//    }
 
     /**
      * Returns the raw summary of this Preference, not formatted as in getSummary().
