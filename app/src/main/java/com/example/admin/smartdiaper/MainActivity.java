@@ -1,8 +1,9 @@
 package com.example.admin.smartdiaper;
 
-import android.content.ContentValues;
-import android.database.sqlite.SQLiteDatabase;
-import android.os.SystemClock;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -11,26 +12,26 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
-import com.clj.fastble.BleManager;
-import com.clj.fastble.callback.BleGattCallback;
-import com.clj.fastble.callback.BleScanCallback;
 import com.clj.fastble.data.BleDevice;
-import com.clj.fastble.exception.BleException;
-import com.clj.fastble.scan.BleScanRuleConfig;
 
 import com.example.admin.smartdiaper.activity.HomeFragment;
 import com.example.admin.smartdiaper.activity.SetupFragment;
 import com.example.admin.smartdiaper.activity.TimeLineFragment;
-import com.example.admin.smartdiaper.db.MyDatabaseHelper;
+import com.example.admin.smartdiaper.ble.BleConnectService;
+//import com.example.admin.smartdiaper.ble.BleService;
+import com.example.admin.smartdiaper.ble.BleService;
+import com.example.admin.smartdiaper.ble.BleStatusReceiver;
+import com.example.admin.smartdiaper.constant.Constant;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
 
     private BleDevice bleDevice;//蓝牙设备
-    private final static String LOG_TAG = "MainActivity";
+
     private View homeView, timelineView, setupView;
     private long mExitTime;
+    private BleStatusReceiver bleStatusReceiver;
 
 
     @Override
@@ -42,6 +43,62 @@ public class MainActivity extends AppCompatActivity {
         setView();
     }
 
+    /**-----------------------------------------------------------------------
+     *                           蓝牙相关
+     *----------------------------------------------------------------------*/
+
+    @Override
+    protected void onResume() {
+        Log.d(TAG, "onResume: ");
+        super.onResume();
+        //开启蓝牙服务
+        if(getIntent().getParcelableExtra("bleDevice")!=null) {
+            //获得bleDevice对象
+            bleDevice = getIntent().getParcelableExtra("bleDevice");
+
+            //把bleDevice传给BleConnectService，这样该service之后才能实现蓝牙连接
+            Intent intent1=new Intent(this,BleConnectService.class);
+            intent1.putExtra("type","transBleDevice");
+            intent1.putExtra("bleDevice", bleDevice);
+            startService(intent1);
+            Log.d(TAG, "onResume: start connect service in main activity");
+
+            //蓝牙期间执行的服务，读取温湿度数据等
+            Intent intent = new Intent(this, BleService.class);
+            intent.putExtra("bleDevice", bleDevice);
+            startService(intent);
+            Log.d(TAG, "Connect bleDevice: "+bleDevice.getName());
+
+        }
+
+        //注册蓝牙连接状态监听广播
+        //实现断开自动重连
+        bleStatusReceiver=new BleStatusReceiver();
+//        IntentFilter stateChangeFilter = new IntentFilter(
+//                BluetoothAdapter.ACTION_STATE_CHANGED);
+        IntentFilter connectedFilter = new IntentFilter(
+                BluetoothDevice.ACTION_ACL_CONNECTED);
+        IntentFilter disConnectedFilter = new IntentFilter(
+                BluetoothDevice.ACTION_ACL_DISCONNECTED);
+//        IntentFilter filter = new IntentFilter();
+//        filter.addAction(Constant.BLE_CON_ACTION);
+        //registerReceiver(bleStatusReceiver,filter);
+        //registerReceiver(bleStatusReceiver, stateChangeFilter);
+        registerReceiver(bleStatusReceiver, connectedFilter);
+        registerReceiver(bleStatusReceiver, disConnectedFilter);
+
+        //发送BLE_CON_ACTION连接广播
+//        Intent intent=new Intent();
+//        if(bleDevice!=null) {
+//            intent.putExtra("bleDevice", bleDevice);
+//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//            intent.setAction(Constant.BLE_CON_ACTION);
+//            MainActivity.this.sendBroadcast(intent);
+//        }else{
+//            Log.e(TAG, "bleDevice is null");
+//        }
+
+    }
 
     /**-----------------------------------------------------------------------
      *                       设置Fragment相关

@@ -8,7 +8,7 @@ public interface Constant {
     String UUID_KEY_CHARACTERISTIC ="0000fff6-0000-1000-8000-00805f9b34fb";
     int BINARY_DATA_DIGITS=24;
     String LAST_BLE_DISCON_TIME="lastDisconnectTime";
-    String BLE_CON_ACTION="com.example.smartmedicinebox.ble";
+    //String BLE_CON_ACTION="com.example.admin.smartdiaper.ble";
 
     //Sqlite数据库相关的常量
     int DB_VERSION = 1;

@@ -18,17 +18,24 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity">
+
+
+
+        </activity>
+        <activity android:name=".activity.FindDiaperActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
-
         </activity>
-        <activity android:name=".activity.FindDiaperActivity">
-
-        </activity>
+        <service
+            android:name=".ble.BleService"
+            android:enabled="true"
+            android:exported="true"/>
+        <service android:name=".ble.BleConnectService"
+            android:enabled="true"
+            android:exported="true"/>
     </application>
 
 </manifest>

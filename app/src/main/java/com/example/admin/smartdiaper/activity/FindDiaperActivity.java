@@ -59,6 +59,8 @@ public class FindDiaperActivity extends BaseActivity {
         });
 
         Button btnScan=findViewById(R.id.scan);
+        //重点是下面这两句话
+        //点击扫描按钮，开始扫描
         btnScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -87,6 +89,8 @@ public class FindDiaperActivity extends BaseActivity {
 
     private void doScan(){
         //配置扫描规则
+        //这里要把附近所有蓝牙设备都显示出来，所以不配置规则
+        //参考： https://github.com/Jasonchenlijian/FastBle/wiki/%E6%89%AB%E6%8F%8F%E5%8F%8A%E8%BF%9E%E6%8E%A5#%E9%85%8D%E7%BD%AE%E6%89%AB%E6%8F%8F%E8%A7%84%E5%88%99
         BleScanRuleConfig scanRuleConfig = new BleScanRuleConfig.Builder()
              //   .setServiceUuids(serviceUuids)      // 只扫描指定的服务的设备，可选
              //   .setDeviceName(true, names)         // 只扫描指定广播名的设备，可选
@@ -97,6 +101,7 @@ public class FindDiaperActivity extends BaseActivity {
         BleManager.getInstance().initScanRule(scanRuleConfig);
 
         //开始扫描
+        //https://github.com/Jasonchenlijian/FastBle/wiki/%E6%89%AB%E6%8F%8F%E5%8F%8A%E8%BF%9E%E6%8E%A5#%E6%89%AB%E6%8F%8F
         BleManager.getInstance().scan(new BleScanCallback() {
 
             /**
@@ -151,6 +156,7 @@ public class FindDiaperActivity extends BaseActivity {
         });
     }
     //连接设备
+    //https://github.com/Jasonchenlijian/FastBle/wiki/%E6%89%AB%E6%8F%8F%E5%8F%8A%E8%BF%9E%E6%8E%A5#%E9%80%9A%E8%BF%87%E8%AE%BE%E5%A4%87%E5%AF%B9%E8%B1%A1%E8%BF%9E%E6%8E%A5
     private void getConnect(BleDevice bleDevice){
 
         BleManager.getInstance().connect(bleDevice, new BleGattCallback() {
@@ -172,13 +178,16 @@ public class FindDiaperActivity extends BaseActivity {
                 Log.d(LOG_TAG, "onConnectSuccess: 连接成功");
                 deviceMac.setText("连接成功");
                 Intent intent=new Intent(FindDiaperActivity.this,MainActivity.class);
-                intent.putExtra("bleDevice",bleDevice);
+                intent.putExtra("bleDevice",bleDevice);  //把bleDevice 传给MainActivity
                 startActivity(intent);
             }
 
             @Override
             public void onDisConnected(boolean b, BleDevice bleDevice, BluetoothGatt bluetoothGatt, int i) {
                  //断开后延迟一段时间再重连
+                Log.d(LOG_TAG, "onDisConnected: 蓝牙连接断开");
+                //通常，连接断开前提是之前连接成功，已经进入了MainActivity，故这句toast应该不会显示
+                //Toast.makeText(getApplicationContext(),"连接断开", Toast.LENGTH_SHORT).show();
             }
         });
     }
