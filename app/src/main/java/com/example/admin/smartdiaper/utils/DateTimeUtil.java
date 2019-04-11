@@ -1,6 +1,7 @@
 package com.example.admin.smartdiaper.utils;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 /**
  * 日期转换 wen
@@ -9,6 +10,14 @@ public class DateTimeUtil {
 
     private static long duration;
 
+    //从2000年1月1日距离现在的时间，以秒为单位（配合主控时间格式）
+    public static long currentTimeFrom2000InSeconds(){
+        long currentTimeInSeconds;
+        Calendar ca=Calendar.getInstance();
+        ca.set(2000,1,1,0,0,0);
+        currentTimeInSeconds=System.currentTimeMillis()/1000-ca.getTimeInMillis()/1000;
+        return currentTimeInSeconds;
+    }
     /**
      * 系统时间转换为年月日
      * @param timestamp
@@ -25,6 +34,7 @@ public class DateTimeUtil {
         return format.format(timestamp);
     }
 
+    //只有这一个用到
     public static String toymdhms(long timestamp){
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return format.format(timestamp);

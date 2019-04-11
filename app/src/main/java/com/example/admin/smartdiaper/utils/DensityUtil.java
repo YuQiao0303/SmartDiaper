@@ -4,6 +4,7 @@ import android.content.Context;
 
 /**
  * dp和px转换工具类
+ * 绘制时间轴的时候用到
  */
 public class DensityUtil {
 
