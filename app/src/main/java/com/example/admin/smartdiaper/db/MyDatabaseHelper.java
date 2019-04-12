@@ -45,25 +45,25 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_RECORD);  //
         db.execSQL(CREATE_TABLE_PREDICTION);
         Log.d(TAG, "onCreate: 建表成功！");
-        //insert 数据
-        ContentValues values = new ContentValues();
-        //insert 历史记录
-        int i;
-        for(i = 0;i<2;i++)
-        {
-            values.put("time", i*1000*3600);
-            db.insert(DB_RECORD_TABLE_NAME,null,values);
-            values.clear();
-        }
-        //insert 预测数据
-        for(i = 2;i<5;i++)
-        {
-            values.put("time", i*1000*3600);
-            db.insert(DB_PREDICTION_TABLE_NAME,null,values);
-            values.clear();
-        }
-
-        Log.d(TAG, "addTestData: 成功添加数据！");
+//        //insert 数据
+//        ContentValues values = new ContentValues();
+//        //insert 历史记录
+//        int i;
+//        for(i = 0;i<2;i++)
+//        {
+//            values.put("time", i*1000*3600);
+//            db.insert(DB_RECORD_TABLE_NAME,null,values);
+//            values.clear();
+//        }
+//        //insert 预测数据
+//        for(i = 2;i<5;i++)
+//        {
+//            values.put("time", i*1000*3600);
+//            db.insert(DB_PREDICTION_TABLE_NAME,null,values);
+//            values.clear();
+//        }
+//
+//        Log.d(TAG, "addTestData: 成功添加数据！");
     }
 
     /**

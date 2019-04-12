@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 
 import com.example.admin.smartdiaper.MyApplication;
@@ -24,6 +25,7 @@ import com.example.admin.smartdiaper.constant.Constant;
 import com.example.admin.smartdiaper.db.MyDatabaseHelper;
 
 
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +42,9 @@ public class TimeLineFragment extends Fragment{
 
     //数据库
     private MyDatabaseHelper dbHelper;
+
+    //UI 控件
+    private static TextView noRecordYet;
     public TimeLineFragment() {
         // Required empty public constructor
     }
@@ -66,6 +71,14 @@ public class TimeLineFragment extends Fragment{
         rlView.setLayoutManager(new LinearLayoutManager(MyApplication.getContext()));
         adapter = new TimeAdapter(list);
         rlView.setAdapter(adapter);
+
+        //判断是否有数据
+        noRecordYet = view.findViewById(R.id.no_record_yet);
+        if(list.size()==0) //若无数据，就显示暂无数据
+            noRecordYet.setVisibility(View.VISIBLE);
+        else
+            noRecordYet.setVisibility(View.GONE);
+
         return view;
 
     }
@@ -79,27 +92,7 @@ public class TimeLineFragment extends Fragment{
         dbHelper = new MyDatabaseHelper(MyApplication.getContext(), Constant.DB_NAME, null, 1);
         dbHelper.getWritableDatabase();   //检测有没有该名字的数据库，若没有则创建，同时调用dbHelper 的 onCreate 方法；若有就不会再创建了
     }
-    private void addTestData(){
-        SQLiteDatabase db = dbHelper.getWritableDatabase();   //获得该数据库实例
-        ContentValues values = new ContentValues();
-        //历史记录
-        int i;
-        for(i = 0;i<10;i++)
-        {
-            values.put("time", i*1000*3600);
-            db.insert(Constant.DB_RECORD_TABLE_NAME,null,values);
-            values.clear();
-        }
-        //预测数据
-        for(i = 10;i<13;i++)
-        {
-            values.put("time", i*1000*3600);
-            db.insert(Constant.DB_PREDICTION_TABLE_NAME,null,values);
-            values.clear();
-        }
 
-        Log.d(TAG, "addTestData: 成功添加数据！");
-    }
 
     /**-----------------------------------------------------------------------
      *                       数据相关
@@ -107,32 +100,27 @@ public class TimeLineFragment extends Fragment{
     public static void addRecordInList(long time)
     {
         //移除最上面的预测数据
-        for(int i=0;i<Constant.PREDICTION_NUM;i++)
-        {
-            list.remove(0);
+        if(list.size()>= Constant.PREDICTION_NUM) {
+            for (int i = 0; i < Constant.PREDICTION_NUM; i++) {
+                list.remove(0);
+            }
         }
-//        if(list.size()>0)
-//        {
-//            while(list.get( list.size()-1).isPredicted() == true )
-//            {
-//                list.remove(list.size()-1);
-//                if(list.size()<=0)
-//                    break;
-//            }
-//        }
-        //添加新的排尿记录
+
+        //添加新的历史记录
         list.add(0,new TimelineItem(time, false,""));
         //添加新的预测数据
         for(int i=0;i<Constant.PREDICTION_NUM;i++)
             list.add(0,new TimelineItem(time, true,""));
 
+        //设置暂无数据的提示语不可见
+        noRecordYet.setVisibility(View.GONE);
+
         //更新listView
         adapter.notifyDataSetChanged();
     }
-    public void updatePrediction(long []times){
 
-    }
     private void initData() {
+        Log.d(TAG, "initData: ");
         list.clear();
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cursorPrediction = db.query(Constant.DB_PREDICTION_TABLE_NAME, null, null, null, null, null, "time desc");
@@ -146,8 +134,11 @@ public class TimeLineFragment extends Fragment{
                 Log.d(TAG, "time is " + time);
                 Log.d(TAG, "id is " + id);
                 list.add(new TimelineItem(time, true,""));
+                Log.d(TAG, "initData: 在TimeLineFragment 中 读取预测数据库的值并显示");
             } while (cursorPrediction.moveToNext());
         }
+        else
+            Log.d(TAG, "initData: else!!!!!!!!!!!!");
         cursorPrediction.close();
 
         // 查询DB_RECORD_NAME表中所有的数据

@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Handler;
@@ -99,9 +100,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                     else
                         Log.d(TAG, "handleMessage: else!!!!!!!!!!!!!!!!");
-                    Log.d(TAG, "handleMessage: ring : " + preferences.getBoolean("ring", false));
-                    Log.d(TAG, "handleMessage: vibrate : " + preferences.getBoolean("vibrate", false));
-                    Log.d(TAG, "handleMessage: save power :" + preferences.getBoolean("save_power", true));
                 }
             }
         };
@@ -249,14 +247,31 @@ public class MainActivity extends AppCompatActivity {
         //数据库操作
         SQLiteDatabase db = dbHelper.getWritableDatabase();   //获得该数据库实例
         ContentValues values = new ContentValues();
-        //历史记录
-            values.put("time", time);
-            db.insert(Constant.DB_RECORD_TABLE_NAME,null,values);
-            values.clear();
-//        //预测数据
-//            values.put("time", i*1000*3600);
-//            db.insert(Constant.DB_PREDICTION_TABLE_NAME,null,values);
-//            values.clear();
+        //添加这条历史记录
+        values.put("time", time);
+        db.insert(Constant.DB_RECORD_TABLE_NAME,null,values);
+        values.clear();
+
+        //添加或更新预测数据
+        Cursor cursorPrediction = db.query(Constant.DB_PREDICTION_TABLE_NAME, null, null, null, null, null, "time desc");
+        if (cursorPrediction.moveToFirst() ==false)   //如果还没有预测数据，则添加
+        {
+            for(int i=0;i<Constant.PREDICTION_NUM;i++) {
+                values.put("time", time);
+                db.insert(Constant.DB_PREDICTION_TABLE_NAME,  null,values);
+                values.clear();
+                Log.d(TAG, "addRecord: 添加 " +i + "条预测数据");
+            }
+        }
+        else{
+            //更新预测数据
+            for(int i=0;i<Constant.PREDICTION_NUM;i++) {
+                values.put("time", time);
+                db.update(Constant.DB_PREDICTION_TABLE_NAME,  values,"id= ?",new String[] {""+(i+1)}); //不要漏了问号
+                values.clear();
+                Log.d(TAG, "addRecord: 更新 " +i + "条预测数据");
+            }
+        }
 
         //list操作
         //如果此时timelineFratment 正在显示中，就手动增加一条数据，否则，下次进入HomeFragment的时候会自动调用OnCreateView 方法中的initData
