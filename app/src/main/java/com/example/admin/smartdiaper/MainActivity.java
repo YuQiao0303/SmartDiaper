@@ -1,17 +1,18 @@
 package com.example.admin.smartdiaper;
 
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 
 import android.bluetooth.BluetoothDevice;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 
-import android.media.SoundPool;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
@@ -73,8 +74,9 @@ public class MainActivity extends AppCompatActivity {
         handler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
-                if (msg.what == Constant.PEE) {
+                if (msg.what == Constant.MSG_PEE) {
                     sendNotification();
+                    showAlertDialog();
                     SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
 
                     if (preferences.getBoolean("vibrate", false)) {
@@ -145,14 +147,39 @@ public class MainActivity extends AppCompatActivity {
                 .setVibrate(new long[]{0, 1000, 1000, 1000})  //设置震动：静止0ms，震动1000ms，静止1000毫秒，震动1000毫秒，需要声明权限
                 .setLights(Color.GREEN,1000,1000)  //设置前置led等：绿色，亮1000ms，灭1000ms
                 */
-                .setAutoCancel(true)    //点击通知自动取消
+                .setAutoCancel(false)    //点击通知无法自动取消
                 .setContentIntent(pi)   //点击跳转
 
                 .build();
-        manager.notify(1, notification);
+        manager.notify(Constant.NOTIFICATION_PEE, notification);
         Log.d(TAG, "sendNotification: ");
     }
-
+    private void showAlertDialog()
+    {
+        AlertDialog.Builder dialog = new AlertDialog.Builder (MainActivity.
+                this);
+        dialog.setTitle("宝宝尿了！");
+        dialog.setMessage("可以更换纸尿裤了哦~");
+        dialog.setCancelable(false);
+        dialog.setPositiveButton("好的", new DialogInterface.
+                OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //关闭通知
+                NotificationManager manager = (NotificationManager) getSystemService
+                        (NOTIFICATION_SERVICE);
+                manager.cancel(Constant.NOTIFICATION_PEE);
+                //铃声停止
+                Reminder.stopRing();
+            }});
+        dialog.setNegativeButton("取消", new DialogInterface.
+                OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        dialog.show();
+    }
 
     /**
      * -----------------------------------------------------------------------
@@ -164,6 +191,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         Log.d(TAG, "onResume: ");
         super.onResume();
+        //
         //开启蓝牙服务
         if (getIntent().getParcelableExtra("bleDevice") != null) {
             //获得bleDevice对象
@@ -187,30 +215,14 @@ public class MainActivity extends AppCompatActivity {
         //注册蓝牙连接状态监听广播
         //实现断开自动重连
         bleStatusReceiver = new BleStatusReceiver();
-//        IntentFilter stateChangeFilter = new IntentFilter(
-//                BluetoothAdapter.ACTION_STATE_CHANGED);
+
         IntentFilter connectedFilter = new IntentFilter(
                 BluetoothDevice.ACTION_ACL_CONNECTED);
         IntentFilter disConnectedFilter = new IntentFilter(
                 BluetoothDevice.ACTION_ACL_DISCONNECTED);
-//        IntentFilter filter = new IntentFilter();
-//        filter.addAction(Constant.BLE_CON_ACTION);
-        //registerReceiver(bleStatusReceiver,filter);
-        //registerReceiver(bleStatusReceiver, stateChangeFilter);
+
         registerReceiver(bleStatusReceiver, connectedFilter);
         registerReceiver(bleStatusReceiver, disConnectedFilter);
-
-        //发送BLE_CON_ACTION连接广播
-//        Intent intent=new Intent();
-//        if(bleDevice!=null) {
-//            intent.putExtra("bleDevice", bleDevice);
-//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//            intent.setAction(Constant.BLE_CON_ACTION);
-//            MainActivity.this.sendBroadcast(intent);
-//        }else{
-//            Log.e(TAG, "bleDevice is null");
-//        }
-
     }
 
     /**-----------------------------------------------------------------------

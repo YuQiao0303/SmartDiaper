@@ -26,8 +26,6 @@ import com.example.admin.smartdiaper.activity.HomeFragment;
 import com.example.admin.smartdiaper.constant.Constant;
 import com.example.admin.smartdiaper.utils.DateTimeUtil;
 
-import static com.example.admin.smartdiaper.MyApplication.getContext;
-
 
 public class BleService extends Service {
 
@@ -99,8 +97,7 @@ public class BleService extends Service {
                                     public void onCharacteristicChanged(byte[] data) {
                                         Log.d(TAG, "recData: "+HexUtil.encodeHexStr(data));
                                         handleData(data);
-                                        lastTemperature = data[0];
-                                        lastHumidity = data[1];
+
                                     }
 
                                 });
@@ -166,7 +163,7 @@ public class BleService extends Service {
             //Log.d(TAG, "handleData: 普通模式");
             //更新ui : handler & messa
             Message msg = new Message();
-            msg.what = Constant.UPDATE_TEMPERATURE_HUMIDITY;
+            msg.what = Constant.MSG_UPDATE_TEMPERATURE_HUMIDITY;
             msg.arg1 = temperature;
             msg.arg2 = humidity;
             HomeFragment.handler.sendMessage(msg);
@@ -174,10 +171,15 @@ public class BleService extends Service {
             if(humidity >= 40 && lastHumidity<40)
             {
                 onPee();
+                Log.d(TAG, "handleData: humidity:"+humidity +" last humidity :"+ lastHumidity);
             }
             //如果提醒
             //数据加入数据库
             //在TimeLineFragment 中显示
+
+            //更新上次温湿度数据
+            lastTemperature = temperature;
+            lastHumidity = humidity;
 
         }
         //省电模式
@@ -189,6 +191,8 @@ public class BleService extends Service {
             // 在TimeLineFragment 中显示
 
         }
+
+
     }
 
     /**
@@ -198,7 +202,7 @@ public class BleService extends Service {
     private void onPee(){
         //提醒
         Message msg = new Message();
-        msg.what = Constant.PEE;
+        msg.what = Constant.MSG_PEE;
         MainActivity.handler.sendMessage(msg);
         //加入数据库
 

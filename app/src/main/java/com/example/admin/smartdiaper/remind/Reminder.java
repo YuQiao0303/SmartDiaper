@@ -120,6 +120,13 @@ public class Reminder {
             soundPool.release();
             soundPool = null;
         }
+    }
 
+    /**
+     * 停止播放当前音乐
+     */
+    public static void stopRing(){
+        soundPool.stop(playingIdInPool);
+        Log.d(TAG, "onDestroy: stop  " + playingIdInPool);
     }
 }
