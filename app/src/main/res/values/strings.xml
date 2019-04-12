@@ -3,9 +3,9 @@
     <!--标题栏-->
 
     <!--蓝牙配对-->
-    <string name="find_box">正在寻找SmartBox</string>
+    <string name="find_box">正在寻找SmartDiaper</string>
     <string name="device_scan">正在扫描</string>
-    <string name="ble_name">SmartBox</string>
+    <string name="ble_name">AIWAC_DIAPER</string>
 
 
 

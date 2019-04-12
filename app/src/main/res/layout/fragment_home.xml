@@ -11,6 +11,7 @@
         android:layout_width="wrap_content"
         />
     <TextView
+        android:id="@+id/last_time"
         android:text="xx年xx月xx日xx：xx：xx，几小时几分钟前"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
@@ -31,11 +32,13 @@
         android:layout_height="wrap_content"
         android:text="save_power"/>
     <TextView
+        android:id="@+id/current_temperature"
         android:text="温度：xx℃"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         />
     <TextView
+        android:id="@+id/current_humidity"
         android:text="湿度：xx"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"

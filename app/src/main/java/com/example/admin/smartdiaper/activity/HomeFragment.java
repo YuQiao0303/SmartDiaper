@@ -13,6 +13,8 @@ import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -24,10 +26,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import com.example.admin.smartdiaper.MainActivity;
 import com.example.admin.smartdiaper.MyApplication;
 import com.example.admin.smartdiaper.R;
+import com.example.admin.smartdiaper.constant.Constant;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 
@@ -42,7 +46,7 @@ public class HomeFragment extends Fragment{
     private boolean[] loadFinished = {false,false,false};  //loadFinished[0]是test_music0.mp3是否加载完毕
     private boolean playSuccess = false;
     private float volumeF;
-
+    public static Handler handler;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -52,6 +56,8 @@ public class HomeFragment extends Fragment{
     public void onCreate(@Nullable Bundle savedInstanceState) {
         Log.d(TAG, "onCreate");
         super.onCreate(savedInstanceState);
+
+        //初始化铃声
         initSoundPool();
 
         //创建通知通道
@@ -72,12 +78,27 @@ public class HomeFragment extends Fragment{
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-        Button sendNotice = view.findViewById(R.id.send_notice);
-        sendNotice.setOnClickListener(new View.OnClickListener(){
+        Button rdmindTest = view.findViewById(R.id.send_notice);
+        final TextView lastTime = view.findViewById(R.id.last_time);
+        final TextView currentTemperature = view.findViewById(R.id.current_temperature);
+        final TextView currentHumidity = view.findViewById(R.id.current_humidity);
+        //更新ui的handler
+        handler = new Handler(){
+            @Override
+            public void handleMessage(Message msg){
+                if(msg.what == Constant.UPDATE_TEMPERATURE_HUMIDITY)
+                {
+                    currentTemperature.setText("当前温度： "+ msg.arg1 + " ℃");
+                    currentHumidity.setText("当前湿度： "+ msg.arg2 );
+                }
+            }
+        };
+        //提醒按钮
+        rdmindTest.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
                 sendNotification();
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
 
                 if(preferences.getBoolean("vibrate",false)){
                     vibrate();
@@ -94,13 +115,13 @@ public class HomeFragment extends Fragment{
         });
         //省电模式
         final Switch savePower = view.findViewById(R.id.save_power_home);
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
         savePower.setChecked(preferences.getBoolean("save_power",false));
         Log.d(TAG, "onCreateView: save_Power from preference+" + preferences.getBoolean("save_power",false));
         savePower.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
                 SharedPreferences.Editor editor = preferences.edit();
                 if(savePower.isChecked())
                 {

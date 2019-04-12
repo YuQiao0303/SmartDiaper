@@ -136,6 +136,7 @@ public class FindDiaperActivity extends BaseActivity {
             @Override
             public void onScanning(BleDevice bleDevice) {
                 String targetBleName=getResources().getString(R.string.ble_name);
+                Log.d(LOG_TAG, "onScanning: targetBleName = " + targetBleName);
                 String name = bleDevice.getName();
                 Log.d(LOG_TAG, "扫描到新设备：" + name);
                 deviceScan.setText("扫描到新设备：" + name);

@@ -7,8 +7,11 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.content.Intent;
 
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.clj.fastble.BleManager;
@@ -17,8 +20,13 @@ import com.clj.fastble.callback.BleWriteCallback;
 import com.clj.fastble.data.BleDevice;
 import com.clj.fastble.exception.BleException;
 import com.clj.fastble.utils.HexUtil;
+import com.example.admin.smartdiaper.MainActivity;
+import com.example.admin.smartdiaper.MyApplication;
+import com.example.admin.smartdiaper.activity.HomeFragment;
 import com.example.admin.smartdiaper.constant.Constant;
 import com.example.admin.smartdiaper.utils.DateTimeUtil;
+
+import static com.example.admin.smartdiaper.MyApplication.getContext;
 
 
 public class BleService extends Service {
@@ -123,27 +131,53 @@ public class BleService extends Service {
                     }
                 });
     }
-    //进行数据处理
-    private void handleData(final byte[] data){
-        //处理数据
-        /*
-         * 判断数据是否有效，
-         * 如果是省电模式，响应，数据加入数据库，并在TimeLineFragment 中显示
-         * 如果是非省电模式，数据显示到HomeFragment，并判断是否提醒
-         * */
 
-        //判断数据是否有效，有效的话要响应
-        // 可能会收到多组数据，每组数据5个字节
+    /**
+     * 处理硬件传来的温湿度数据
+     * @param data
+     */
+    private void handleData(final byte[] data){
+        //判断数据是否有效
         if (data.length == 0) {
+            Log.d(TAG, "handleData: 收到notification长度为0");
             return;
         }
-        if(data.length %Constant.DATA_SIZE !=0){
-            //Log.d(TAG, "handleData: 收到notification数据出错：");
+        if(data.length !=Constant.DATA_SIZE_NO_TIME){
+            Log.d(TAG, "handleData: 收到notification长度有误：");
+            return;
         }
+        //过滤震动传感器数据
+        if(HexUtil.encodeHexStr(data).equals("ffff"))
+            return;
 
-        if(data.length %Constant.DATA_SIZE ==0){
+
+        int temperature = data[0];
+        int humidity = data[1];
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
+
+        //普通模式
+        if(!preferences.getBoolean("save_power",false)){
+            Log.d(TAG, "handleData: 普通模式");
+            //更新ui : handler & messa
+            Message msg = new Message();
+            msg.what = Constant.UPDATE_TEMPERATURE_HUMIDITY;
+            msg.arg1 = temperature;
+            msg.arg2 = humidity;
+            HomeFragment.handler.sendMessage(msg);
+            //判断是否提醒
+            //如果提醒
+            //数据加入数据库
+            //在TimeLineFragment 中显示
+
+        }
+        //省电模式
+        else{
+            Log.d(TAG, "handleData: 省电模式");
+            //响应
+            //提醒
+            //数据加入数据库
+            // 在TimeLineFragment 中显示
 
         }
     }
-
 }
