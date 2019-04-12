@@ -46,7 +46,7 @@ public class HomeFragment extends Fragment{
     private boolean[] loadFinished = {false,false,false};  //loadFinished[0]是test_music0.mp3是否加载完毕
     private boolean playSuccess = false;
     private float volumeF;
-    public static Handler handler;
+    public static Handler handler;  //处理BleService传来的更新温湿度ui消息
 
     public HomeFragment() {
         // Required empty public constructor
@@ -57,20 +57,20 @@ public class HomeFragment extends Fragment{
         Log.d(TAG, "onCreate");
         super.onCreate(savedInstanceState);
 
-        //初始化铃声
-        initSoundPool();
-
-        //创建通知通道
-        //这部分代码可以写在任何位置，只需要保证在通知弹出之前调用就可以了
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            /*
-            * 渠道ID可以随便定义，只要保证全局唯一性就可以。
-            * 渠道名称是给用户看的，需要能够表达清楚这个渠道的用途。
-            * 重要等级的不同则会决定通知的不同行为，当然这里只是初始状态下的重要等级，用户可以随时手动更改某个渠道的重要等级，App是无法干预的。这里设成low是为了不响铃
-            * */
-            createNotificationChannel("remind", "排尿提醒", NotificationManager.IMPORTANCE_LOW);
-            createNotificationChannel("other", "其他消息", NotificationManager.IMPORTANCE_LOW);
-        }
+//        //初始化铃声
+//        initSoundPool();
+//
+//        //创建通知通道
+//        //这部分代码可以写在任何位置，只需要保证在通知弹出之前调用就可以了
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            /*
+//            * 渠道ID可以随便定义，只要保证全局唯一性就可以。
+//            * 渠道名称是给用户看的，需要能够表达清楚这个渠道的用途。
+//            * 重要等级的不同则会决定通知的不同行为，当然这里只是初始状态下的重要等级，用户可以随时手动更改某个渠道的重要等级，App是无法干预的。这里设成low是为了不响铃
+//            * */
+//            createNotificationChannel("remind", "排尿提醒", NotificationManager.IMPORTANCE_LOW);
+//            createNotificationChannel("other", "其他消息", NotificationManager.IMPORTANCE_LOW);
+//        }
 
     }
     @Override
@@ -93,26 +93,26 @@ public class HomeFragment extends Fragment{
                 }
             }
         };
-        //提醒按钮
-        rdmindTest.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                sendNotification();
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
-
-                if(preferences.getBoolean("vibrate",false)){
-                    vibrate();
-                }
-                if(preferences.getBoolean("ring",false)){
-                    int volume = preferences.getInt("ring_volume",100);
-                    Log.d(TAG, "onClick: get volume from preference:" + volume);
-                    int index = Integer.valueOf(preferences.getString("ring_music","0")).intValue();
-                    Log.d(TAG, "onClick: get musicId from preference:" + index);
-                    ring(index,volume);
-                }
-
-            }
-        });
+//        //提醒按钮
+//        rdmindTest.setOnClickListener(new View.OnClickListener(){
+//            @Override
+//            public void onClick(View v){
+//                sendNotification();
+//                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
+//
+//                if(preferences.getBoolean("vibrate",false)){
+//                    vibrate();
+//                }
+//                if(preferences.getBoolean("ring",false)){
+//                    int volume = preferences.getInt("ring_volume",100);
+//                    Log.d(TAG, "onClick: get volume from preference:" + volume);
+//                    int index = Integer.valueOf(preferences.getString("ring_music","0")).intValue();
+//                    Log.d(TAG, "onClick: get musicId from preference:" + index);
+//                    ring(index,volume);
+//                }
+//
+//            }
+//        });
         //省电模式
         final Switch savePower = view.findViewById(R.id.save_power_home);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());

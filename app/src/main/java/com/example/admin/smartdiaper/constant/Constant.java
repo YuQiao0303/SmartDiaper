@@ -18,6 +18,7 @@ public interface Constant {
 
     //handler & msg 定义
     int UPDATE_TEMPERATURE_HUMIDITY = 1;
+    int PEE = 2;
 
 
 }

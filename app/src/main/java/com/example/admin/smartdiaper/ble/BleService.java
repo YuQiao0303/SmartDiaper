@@ -36,6 +36,10 @@ public class BleService extends Service {
     private BluetoothGattCharacteristic characteristic;
     private BleDevice bleDevice;
 
+    //上一次的温湿度
+    private int lastTemperature;
+    private int lastHumidity;
+
     public BleService() {
     }
 
@@ -95,6 +99,8 @@ public class BleService extends Service {
                                     public void onCharacteristicChanged(byte[] data) {
                                         Log.d(TAG, "recData: "+HexUtil.encodeHexStr(data));
                                         handleData(data);
+                                        lastTemperature = data[0];
+                                        lastHumidity = data[1];
                                     }
 
                                 });
@@ -147,7 +153,7 @@ public class BleService extends Service {
             return;
         }
         //过滤震动传感器数据
-        if(HexUtil.encodeHexStr(data).equals("ffff"))
+        if(HexUtil.encodeHexStr(data).equals("ffff")||HexUtil.encodeHexStr(data).equals("5555"))
             return;
 
 
@@ -157,7 +163,7 @@ public class BleService extends Service {
 
         //普通模式
         if(!preferences.getBoolean("save_power",false)){
-            Log.d(TAG, "handleData: 普通模式");
+            //Log.d(TAG, "handleData: 普通模式");
             //更新ui : handler & messa
             Message msg = new Message();
             msg.what = Constant.UPDATE_TEMPERATURE_HUMIDITY;
@@ -165,6 +171,10 @@ public class BleService extends Service {
             msg.arg2 = humidity;
             HomeFragment.handler.sendMessage(msg);
             //判断是否提醒
+            if(humidity >= 40 && lastHumidity<40)
+            {
+                onPee();
+            }
             //如果提醒
             //数据加入数据库
             //在TimeLineFragment 中显示
@@ -180,4 +190,18 @@ public class BleService extends Service {
 
         }
     }
+
+    /**
+     * 婴儿排尿时调用该函数
+     * 提醒用户更换纸尿裤，将数据加入数据库
+     */
+    private void onPee(){
+        //提醒
+        Message msg = new Message();
+        msg.what = Constant.PEE;
+        MainActivity.handler.sendMessage(msg);
+        //加入数据库
+
+    }
+
 }
