@@ -12,9 +12,10 @@ public interface Constant {
     //String BLE_CON_ACTION="com.example.admin.smartdiaper.ble";
 
     //Sqlite数据库相关的常量
-    String DB_RECORD_NAME = "tbl_record";
-    String DB_PREDICTION_NAME = "tbl_prediction";
-
+    String DB_RECORD_TABLE_NAME = "tbl_record";
+    String DB_PREDICTION_TABLE_NAME = "tbl_prediction";
+    String DB_NAME = "SmartDiaper.db";
+    int PREDICTION_NUM = 3;
 
     //handler & msg 定义
     int MSG_UPDATE_TEMPERATURE_HUMIDITY = 1;

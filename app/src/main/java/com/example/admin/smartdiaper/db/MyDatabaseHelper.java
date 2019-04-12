@@ -5,25 +5,24 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-import android.widget.Toast;
 
-import static com.example.admin.smartdiaper.constant.Constant.DB_PREDICTION_NAME;
-import static com.example.admin.smartdiaper.constant.Constant.DB_RECORD_NAME;
+import static com.example.admin.smartdiaper.constant.Constant.DB_PREDICTION_TABLE_NAME;
+import static com.example.admin.smartdiaper.constant.Constant.DB_RECORD_TABLE_NAME;
 
 public class MyDatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "MyDatabaseHelper";
     //建表的SQL语句
-    public static final String CREATE_TABLE_RECORD = "create table "+DB_RECORD_NAME+" ("
+    public static final String CREATE_TABLE_RECORD = "create table "+ DB_RECORD_TABLE_NAME +" ("
             + "id integer primary key autoincrement, "
             + "time integer) ";  //1970.1.1  0点至今的毫秒数
 
-    public static final String CREATE_TABLE_PREDICTION = "create table "+DB_PREDICTION_NAME+" ("
+    public static final String CREATE_TABLE_PREDICTION = "create table "+ DB_PREDICTION_TABLE_NAME +" ("
             + "id integer primary key autoincrement, "
             + "time integer) ";  //1970.1.1  0点至今的毫秒数
 
     //删表语句
-    public static final String DROP_TABLE_RECORD ="drop table if exists "+DB_RECORD_NAME;
-    public static final String DROP_TABLE_PREDICTION = "drop table if exitsts" + DB_PREDICTION_NAME;
+    public static final String DROP_TABLE_RECORD ="drop table if exists "+ DB_RECORD_TABLE_NAME;
+    public static final String DROP_TABLE_PREDICTION = "drop table if exists " + DB_PREDICTION_TABLE_NAME;
     private Context mContext;
     //构造方法
     public MyDatabaseHelper(Context context, String name,
@@ -50,17 +49,17 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         //insert 历史记录
         int i;
-        for(i = 0;i<10;i++)
+        for(i = 0;i<2;i++)
         {
             values.put("time", i*1000*3600);
-            db.insert(DB_RECORD_NAME,null,values);
+            db.insert(DB_RECORD_TABLE_NAME,null,values);
             values.clear();
         }
         //insert 预测数据
-        for(i = 10;i<13;i++)
+        for(i = 2;i<5;i++)
         {
             values.put("time", i*1000*3600);
-            db.insert(DB_PREDICTION_NAME,null,values);
+            db.insert(DB_PREDICTION_TABLE_NAME,null,values);
             values.clear();
         }
 

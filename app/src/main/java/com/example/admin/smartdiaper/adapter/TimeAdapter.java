@@ -87,17 +87,17 @@ public class TimeAdapter extends RecyclerView.Adapter{
             layoutParams.addRule(RelativeLayout.ALIGN_BOTTOM, R.id.rl_title);
             //设置margin
             int marginLeft = 20;
-            if (position == 0) {  //第一条数据，去掉上方线段
-                //打印信息-----------------------
-                String message = "1 = "+ 1 + "\n"
-                +"rlTitle.getHeight()/2" + rlTitle.getHeight()/2 + "\n"+
-                        "DensityUtil.dip2px(vLine.getContext(), rlTitle.getHeight()/2)" +DensityUtil.dip2px(vLine.getContext(), rlTitle.getHeight()/2)+"\n";
-                Log.d(TAG, message);
-                //----------------------
-                layoutParams.setMargins(DensityUtil.dip2px(vLine.getContext(), marginLeft), DensityUtil.dip2px(vLine.getContext(), 25), 0, 0);
-            } else if (position == data.size() - 1) {  //最后一条数据，去掉下方线段
-                layoutParams.setMargins(DensityUtil.dip2px(vLine.getContext(), marginLeft), 0, 0, DensityUtil.dip2px(vLine.getContext(), 25));
-            }
+//            if (position == 0) {  //第一条数据，去掉上方线段
+//                //打印信息-----------------------
+//                String message = "1 = "+ 1 + "\n"
+//                +"rlTitle.getHeight()/2" + rlTitle.getHeight()/2 + "\n"+
+//                        "DensityUtil.dip2px(vLine.getContext(), rlTitle.getHeight()/2)" +DensityUtil.dip2px(vLine.getContext(), rlTitle.getHeight()/2)+"\n";
+//                Log.d(TAG, message);
+//                //----------------------
+//                layoutParams.setMargins(DensityUtil.dip2px(vLine.getContext(), marginLeft), DensityUtil.dip2px(vLine.getContext(), 25), 0, 0);
+//            } else if (position == data.size() - 1) {  //最后一条数据，去掉下方线段
+//                layoutParams.setMargins(DensityUtil.dip2px(vLine.getContext(), marginLeft), 0, 0, DensityUtil.dip2px(vLine.getContext(), 25));
+//            }
             vLine.setLayoutParams(layoutParams);
         }
     }

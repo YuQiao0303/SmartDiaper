@@ -8,11 +8,13 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 
 import android.bluetooth.BluetoothDevice;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
@@ -37,6 +39,7 @@ import com.example.admin.smartdiaper.ble.BleConnectService;
 import com.example.admin.smartdiaper.ble.BleService;
 import com.example.admin.smartdiaper.ble.BleStatusReceiver;
 import com.example.admin.smartdiaper.constant.Constant;
+import com.example.admin.smartdiaper.db.MyDatabaseHelper;
 import com.example.admin.smartdiaper.remind.Reminder;
 
 public class MainActivity extends AppCompatActivity {
@@ -47,12 +50,15 @@ public class MainActivity extends AppCompatActivity {
     private View homeView, timelineView, setupView; //bottom bar中的三个图标
     private BleStatusReceiver bleStatusReceiver;
     public static Handler handler;  //处理BleService传来的提醒
-
+    //数据库
+    private MyDatabaseHelper dbHelper;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //数据库初始化
+        initDatabase();
         //设置三个Fragment
         setView();
 
@@ -75,20 +81,27 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void handleMessage(Message msg) {
                 if (msg.what == Constant.MSG_PEE) {
-                    sendNotification();
-                    showAlertDialog();
+
+                    addRecord((long)msg.obj);//增加一条数据（数据库 & adapter 的list中 同步增加）
+                    sendNotification();   //发通知
+                    showAlertDialog();   //弹框提醒
                     SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
 
-                    if (preferences.getBoolean("vibrate", false)) {
-                        Reminder.vibrate();
+                    if (preferences.getBoolean("vibrate", true)) {
+                        Reminder.vibrate();  //震动
                     }
-                    if (preferences.getBoolean("ring", false)) {
+                    if (preferences.getBoolean("ring", true)) {
                         int volume = preferences.getInt("ring_volume", 100);
                         Log.d(TAG, "handleMessage: get volume from preference:" + volume);
                         int index = Integer.valueOf(preferences.getString("ring_music", "0")).intValue();
                         Log.d(TAG, "handleMessage: get musicId from preference:" + index);
-                        Reminder.ring(index, volume);
+                        Reminder.ring(index, volume);  //响铃
                     }
+                    else
+                        Log.d(TAG, "handleMessage: else!!!!!!!!!!!!!!!!");
+                    Log.d(TAG, "handleMessage: ring : " + preferences.getBoolean("ring", false));
+                    Log.d(TAG, "handleMessage: vibrate : " + preferences.getBoolean("vibrate", false));
+                    Log.d(TAG, "handleMessage: save power :" + preferences.getBoolean("save_power", true));
                 }
             }
         };
@@ -125,7 +138,6 @@ public class MainActivity extends AppCompatActivity {
                 NOTIFICATION_SERVICE);
         notificationManager.createNotificationChannel(channel);
     }
-
 
     /**
      * 发送通知
@@ -223,6 +235,36 @@ public class MainActivity extends AppCompatActivity {
 
         registerReceiver(bleStatusReceiver, connectedFilter);
         registerReceiver(bleStatusReceiver, disConnectedFilter);
+    }
+
+    /**-----------------------------------------------------------------------
+     *                       数据库相关
+     *----------------------------------------------------------------------*/
+    private void initDatabase(){
+        //创建数据库
+        dbHelper = new MyDatabaseHelper(MyApplication.getContext(), Constant.DB_NAME, null, 1);
+        dbHelper.getWritableDatabase();   //检测有没有该名字的数据库，若没有则创建，同时调用dbHelper 的 onCreate 方法；若有就不会再创建了
+    }
+    private void addRecord(long time){
+        //数据库操作
+        SQLiteDatabase db = dbHelper.getWritableDatabase();   //获得该数据库实例
+        ContentValues values = new ContentValues();
+        //历史记录
+            values.put("time", time);
+            db.insert(Constant.DB_RECORD_TABLE_NAME,null,values);
+            values.clear();
+//        //预测数据
+//            values.put("time", i*1000*3600);
+//            db.insert(Constant.DB_PREDICTION_TABLE_NAME,null,values);
+//            values.clear();
+
+        //list操作
+        //如果此时timelineFratment 正在显示中，就手动增加一条数据，否则，下次进入HomeFragment的时候会自动调用OnCreateView 方法中的initData
+        if(timelineView.isSelected())
+        {
+            TimeLineFragment.addRecordInList(time);
+            Log.d(TAG, "addTestData: 成功添加数据！");
+        }
     }
 
     /**-----------------------------------------------------------------------

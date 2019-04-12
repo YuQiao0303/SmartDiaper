@@ -161,6 +161,7 @@ public class BleService extends Service {
         //普通模式
         if(!preferences.getBoolean("save_power",false)){
             //Log.d(TAG, "handleData: 普通模式");
+            Log.d(TAG, "handleData: 温度："+ temperature + "湿度: "+ humidity);
             //更新ui : handler & messa
             Message msg = new Message();
             msg.what = Constant.MSG_UPDATE_TEMPERATURE_HUMIDITY;
@@ -203,9 +204,10 @@ public class BleService extends Service {
         //提醒
         Message msg = new Message();
         msg.what = Constant.MSG_PEE;
+        msg.obj = System.currentTimeMillis();
         MainActivity.handler.sendMessage(msg);
         //加入数据库
-
     }
+
 
 }

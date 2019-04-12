@@ -22,7 +22,7 @@
         <SwitchPreference
             android:key="vibrate"
             android:title="震动"
-            android:defaultValue="false"/>
+            android:defaultValue="true"/>
         <SwitchPreference
             android:key="ring"
             android:title="响铃"

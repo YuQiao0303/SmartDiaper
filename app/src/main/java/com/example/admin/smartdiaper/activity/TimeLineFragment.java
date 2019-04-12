@@ -20,24 +20,23 @@ import com.example.admin.smartdiaper.R;
 import com.example.admin.smartdiaper.adapter.TimeAdapter;
 
 import com.example.admin.smartdiaper.bean.TimelineItem;
+import com.example.admin.smartdiaper.constant.Constant;
 import com.example.admin.smartdiaper.db.MyDatabaseHelper;
 
 
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import static com.example.admin.smartdiaper.constant.Constant.DB_PREDICTION_NAME;
-import static com.example.admin.smartdiaper.constant.Constant.DB_RECORD_NAME;
+
 
 
 public class TimeLineFragment extends Fragment{
     private static final String TAG="TimeLineFragment";
 
     //存储列表数据
-    List<TimelineItem> list = new ArrayList<>();
-    TimeAdapter adapter;
+    static List<TimelineItem> list = new ArrayList<>();
+    static TimeAdapter adapter;
 
     //数据库
     private MyDatabaseHelper dbHelper;
@@ -77,10 +76,8 @@ public class TimeLineFragment extends Fragment{
      *----------------------------------------------------------------------*/
     private void initDatabase(){
         //创建数据库
-        dbHelper = new MyDatabaseHelper(MyApplication.getContext(), "SmartDiaper.db", null, 1);
+        dbHelper = new MyDatabaseHelper(MyApplication.getContext(), Constant.DB_NAME, null, 1);
         dbHelper.getWritableDatabase();   //检测有没有该名字的数据库，若没有则创建，同时调用dbHelper 的 onCreate 方法；若有就不会再创建了
-        //添加测试数据
-        //addTestData();
     }
     private void addTestData(){
         SQLiteDatabase db = dbHelper.getWritableDatabase();   //获得该数据库实例
@@ -90,14 +87,14 @@ public class TimeLineFragment extends Fragment{
         for(i = 0;i<10;i++)
         {
             values.put("time", i*1000*3600);
-            db.insert(DB_RECORD_NAME,null,values);
+            db.insert(Constant.DB_RECORD_TABLE_NAME,null,values);
             values.clear();
         }
         //预测数据
         for(i = 10;i<13;i++)
         {
             values.put("time", i*1000*3600);
-            db.insert(DB_PREDICTION_NAME,null,values);
+            db.insert(Constant.DB_PREDICTION_TABLE_NAME,null,values);
             values.clear();
         }
 
@@ -107,12 +104,38 @@ public class TimeLineFragment extends Fragment{
     /**-----------------------------------------------------------------------
      *                       数据相关
      *----------------------------------------------------------------------*/
+    public static void addRecordInList(long time)
+    {
+        //移除最上面的预测数据
+        for(int i=0;i<Constant.PREDICTION_NUM;i++)
+        {
+            list.remove(0);
+        }
+//        if(list.size()>0)
+//        {
+//            while(list.get( list.size()-1).isPredicted() == true )
+//            {
+//                list.remove(list.size()-1);
+//                if(list.size()<=0)
+//                    break;
+//            }
+//        }
+        //添加新的排尿记录
+        list.add(0,new TimelineItem(time, false,""));
+        //添加新的预测数据
+        for(int i=0;i<Constant.PREDICTION_NUM;i++)
+            list.add(0,new TimelineItem(time, true,""));
+
+        //更新listView
+        adapter.notifyDataSetChanged();
+    }
+    public void updatePrediction(long []times){
+
+    }
     private void initData() {
+        list.clear();
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        // DB_PREDICTION_NAME
-        Cursor cursorPrediction = db.query(DB_PREDICTION_NAME, null, null, null, null, null, "time desc");
-//        final String selPrediction = "select * from "+ DB_PREDICTION_NAME + "order by time desc";
-//        Cursor cursorPrediction = db.rawQuery(selPrediction,null);
+        Cursor cursorPrediction = db.query(Constant.DB_PREDICTION_TABLE_NAME, null, null, null, null, null, "time desc");
         if (cursorPrediction.moveToFirst()) {
             do {
                 // 遍历Cursor对象，将每条数据加入list，并打印到控制台
@@ -128,7 +151,7 @@ public class TimeLineFragment extends Fragment{
         cursorPrediction.close();
 
         // 查询DB_RECORD_NAME表中所有的数据
-        Cursor cursor = db.query(DB_RECORD_NAME, null, null, null, null, null, "time desc");
+        Cursor cursor = db.query(Constant.DB_RECORD_TABLE_NAME, null, null, null, null, null, "time desc");
         if (cursor.moveToFirst()) {
             do {
                 // 遍历Cursor对象，将每条数据加入list，并打印到控制台
@@ -142,8 +165,6 @@ public class TimeLineFragment extends Fragment{
             } while (cursor.moveToNext());
         }
         cursor.close();
-
-
     }
 
 }
