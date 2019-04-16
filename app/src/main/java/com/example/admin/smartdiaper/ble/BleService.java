@@ -186,10 +186,8 @@ public class BleService extends Service {
             return;
         }
         //过滤温度传感器不响应时的错误码
-        if(HexUtil.encodeHexStr(data).equals("5555")){
+        if(data[0] == 0x55 && data[1] == 0x55)
             return;
-        }
-
 
         int temperature = data[0];
         int humidity = data[1];
@@ -211,7 +209,8 @@ public class BleService extends Service {
             msg.arg2 = humidity;
             HomeFragment.handler.sendMessage(msg);
             //判断是否提醒
-            if(humidity >= 40 && lastHumidity<40)
+            boolean pee = (humidity >= 45 && lastHumidity<45);
+            if(pee)
             {
                 sendPeeMessage();
                 Log.d(TAG, "handleData: humidity:"+humidity +" last humidity :"+ lastHumidity);
@@ -230,12 +229,23 @@ public class BleService extends Service {
                 return;
             }
             //时间判断
+            //这次排尿记录的时间与现在的时间差，单位是毫秒
+            long peeTime = DateTimeUtil.mcuTimeToAndroidTime(DateTimeUtil.bytes2Long(data,2,data.length-1));
+            long recordTime2NowMillis = System.currentTimeMillis()- peeTime;
+            long recordTime2NowSeconds = recordTime2NowMillis/1000;
+//            Log.d(TAG, "handleData: 转换为安卓时间：" + DateTimeUtil.mcuTimeToAndroidTime(DateTimeUtil.bytes2Long(data,2,data.length-1)));
+//            Log.d(TAG, "handleData:   现在的时间是：" + System.currentTimeMillis());
+//            Log.d(TAG, "handleData: 到现在的时间是： "+ recordTime2NowSeconds + "s");
+            if(recordTime2NowSeconds<20)  //是现在排尿的数据
+            {
+                //提醒
+                sendPeeMessage();
+            }
 
-
-            //提醒
-            sendPeeMessage();
-            //数据加入数据库
-            // 在TimeLineFragment 中显示
+            else  //是以前蓝牙断开期间的数据
+            {
+                sendStoreMessage(peeTime);
+            }
 
         }
 
@@ -247,13 +257,18 @@ public class BleService extends Service {
      * 提醒用户更换纸尿裤，将数据加入数据库
      */
     private void sendPeeMessage(){
-        //提醒
+        //数据库和ui操作，提醒
         Message msg = new Message();
         msg.what = Constant.MSG_PEE;
         msg.obj = System.currentTimeMillis();
         MainActivity.handler.sendMessage(msg);
-        //加入数据库
+
     }
 
-
+    private void sendStoreMessage(long time){
+        Message msg = new Message();
+        msg.what = Constant.MSG_STORE;
+        msg.obj = time;
+        MainActivity.handler.sendMessage(msg);
+    }
 }

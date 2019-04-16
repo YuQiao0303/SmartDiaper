@@ -131,14 +131,21 @@ public class MainActivity extends AppCompatActivity {
                             Log.d(TAG, "handleMessage: else!!!!!!!!!!!!!!!!");
                         break;
                     }
-                    case (Constant.MSG_SET_MODE):{
+                    case (Constant.MSG_STORE):{
+                        addRecord((long)msg.obj);//增加一条数据（数据库 & adapter 的list中 同步增加） //此处时间是1970开始至今的时间
+                    }
+                    case (Constant.MSG_SET_MODE): {
                         Log.d(TAG, "handleMessage: MainActivity收到设置模式的消息");
-                        Intent bindIntent = new Intent(MainActivity.this, BleService.class );
-                        //BIND_AUTO_CREATE 表示在活动和服务进行绑定后自动创建服务。
-                        //这会使得MyService中的onCreate() 方法得到执行， 但onStartCommand() 方法不会执行。
-                        //bindService(bindIntent, connection, BIND_AUTO_CREATE); // 绑定服务,执行onBind。如果之前没创建则还要执行onCreate
-                        bindService(bindIntent,connection, Context.BIND_AUTO_CREATE);
-                        //unbindService(connection); // 解绑服务 ，调用onDestroy()
+                        if (myBinder == null) {
+                            Intent bindIntent = new Intent(MainActivity.this, BleService.class);
+                            //BIND_AUTO_CREATE 表示在活动和服务进行绑定后自动创建服务。
+                            //这会使得MyService中的onCreate() 方法得到执行， 但onStartCommand() 方法不会执行。
+                            //bindService(bindIntent, connection, BIND_AUTO_CREATE); // 绑定服务,执行onBind。如果之前没创建则还要执行onCreate
+                            bindService(bindIntent, connection, Context.BIND_AUTO_CREATE);
+                        }
+                        else{
+                            myBinder.setSavePowerMode();
+                        }
                     }
 
 

@@ -1,5 +1,7 @@
 package com.example.admin.smartdiaper.utils;
 
+import android.util.Log;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -7,6 +9,7 @@ import java.util.Calendar;
  * 日期转换 wen
  */
 public class DateTimeUtil {
+    private static final String TAG = "DateTimeUtil";
 
     private static long duration;
 
@@ -19,13 +22,30 @@ public class DateTimeUtil {
         return currentTimeInSeconds;
     }
 
-    //把4字节的时间2000开始的时间  转换为  8字节   1970 开始的时间
-    public static long mcuTimeToAndroidTime(int mcuTime){
+    //把4字节的时间2000开始的时间，单位是s  转换为  8字节   1970 开始的时间，单位是mm
+    public static long mcuTimeToAndroidTime(long mcuTime){
         long androidTime = 0;
-        Calendar ca=Calendar.getInstance();
-        ca.set(2000,1,1,0,0,0);
-//        ca.getTimeInMillis()/1000;
+        Calendar ca2000=Calendar.getInstance();
+        ca2000.set(2000,1,1,0,0,0);
+        Calendar ca1970=Calendar.getInstance();
+        ca1970.set(1970,1,1,0,0,0);
+        long diff = ca2000.getTimeInMillis() - ca1970.getTimeInMillis();
+        androidTime = mcuTime * 1000  + ca2000.getTimeInMillis();
+        Log.d(TAG, "mcuTimeToAndroidTime: diff = "+ diff);
+        Log.d(TAG, "mcuTimeToAndroidTime: ca2000.getTimeInMillis() = " + ca2000.getTimeInMillis());
+        Log.d(TAG, "mcuTimeToAndroidTime: ca1970.getTimeInMillis() = " + ca1970.getTimeInMillis());
         return androidTime;
+    }
+    /**
+     * byte[]转Long
+     */
+    public static long bytes2Long(byte[] byteNum,int start,int end) {
+        long num = 0;
+        for (int ix = start; ix <= end; ++ix) {
+            num <<= 8;
+            num |= (byteNum[ix] & 0xff);
+        }
+        return num;
     }
     /**
      * 系统时间转换为年月日
