@@ -17,6 +17,7 @@
         android:layout_width="wrap_content"
         />
     <TextView
+        android:id="@+id/next_time"
         android:text="预计下次排尿时间："
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"

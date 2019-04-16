@@ -1,6 +1,8 @@
 package com.example.admin.smartdiaper.activity;
 
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -18,13 +20,17 @@ import android.widget.TextView;
 import com.example.admin.smartdiaper.MainActivity;
 import com.example.admin.smartdiaper.MyApplication;
 import com.example.admin.smartdiaper.R;
+import com.example.admin.smartdiaper.bean.TimelineItem;
 import com.example.admin.smartdiaper.constant.Constant;
+import com.example.admin.smartdiaper.db.MyDatabaseHelper;
+import com.example.admin.smartdiaper.utils.DateTimeUtil;
 
 
 public class HomeFragment extends Fragment{
     private static final String TAG="HomeFragment";
     public static Handler handler;  //处理BleService传来的更新温湿度ui消息
-
+    //数据库
+    private MyDatabaseHelper dbHelper;
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -44,15 +50,41 @@ public class HomeFragment extends Fragment{
         final TextView lastTime = view.findViewById(R.id.last_time);
         final TextView currentTemperature = view.findViewById(R.id.current_temperature);
         final TextView currentHumidity = view.findViewById(R.id.current_humidity);
+        //-------------查数据库--------------
+        //创建数据库
+        dbHelper = new MyDatabaseHelper(MyApplication.getContext(), Constant.DB_NAME, null, 1);
+        dbHelper.getWritableDatabase();   //检测有没有该名字的数据库，若没有则创建，同时调用dbHelper 的 onCreate 方法；若有就不会再创建了
+
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        //Cursor cursorPrediction = db.query(Constant.DB_PREDICTION_TABLE_NAME, null, null, null, null, null, "time desc");
+        Cursor cursor = db.rawQuery("select MAX(time) from " + Constant.DB_RECORD_TABLE_NAME ,null);
+        if (cursor.moveToFirst()) {
+            long time = cursor.getLong(0);
+            //long time = cursor.getLong(cursor.getColumnIndex("time"));
+            Log.d(TAG, "time is " + time);
+            lastTime.setText(DateTimeUtil.toymdhms(time));
+        }
+        else
+            Log.d(TAG, "初始化“上次排尿时间”时，查询数据库失败");
+        cursor.close();
+        //---------------------------------------------
         //更新温湿度ui的handler
         handler = new Handler(){
             @Override
             public void handleMessage(Message msg){
-                if(msg.what == Constant.MSG_UPDATE_TEMPERATURE_HUMIDITY)
-                {
-                    currentTemperature.setText("当前温度： "+ msg.arg1 + " ℃");
-                    currentHumidity.setText("当前湿度： "+ msg.arg2 );
+                switch (msg.what){
+                    case (Constant.MSG_UPDATE_TEMPERATURE_HUMIDITY):{
+                        currentTemperature.setText("当前温度： "+ msg.arg1 + " ℃");
+                        currentHumidity.setText("当前湿度： "+ msg.arg2 );
+                        break;
+                    }
+                    case(Constant.MSG_PEE_HOME):{
+                        lastTime.setText(DateTimeUtil.toymdhms((long)msg.obj));
+                        break;
+                    }
+                    default:break;
                 }
+
             }
         };
 

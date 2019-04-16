@@ -260,7 +260,7 @@ public class BleService extends Service {
     private void sendPeeMessage(){
         //数据库和ui操作，提醒
         Message msg = new Message();
-        msg.what = Constant.MSG_PEE;
+        msg.what = Constant.MSG_PEE_MAIN;
         msg.obj = System.currentTimeMillis();
         MainActivity.handler.sendMessage(msg);
 

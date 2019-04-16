@@ -21,9 +21,10 @@ public interface Constant {
 
     //handler & msg 定义
     int MSG_UPDATE_TEMPERATURE_HUMIDITY = 1;
-    int MSG_PEE = 2;
+    int MSG_PEE_MAIN = 2;
     int MSG_SET_MODE = 3;
     int MSG_STORE = 4;
+    int MSG_PEE_HOME = 5;
 
 
     //notification id

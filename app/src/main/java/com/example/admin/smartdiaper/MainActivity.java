@@ -34,12 +34,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
-import com.clj.fastble.BleManager;
-import com.clj.fastble.callback.BleWriteCallback;
 import com.clj.fastble.data.BleDevice;
 
-import com.clj.fastble.exception.BleException;
-import com.clj.fastble.utils.HexUtil;
 import com.example.admin.smartdiaper.activity.HomeFragment;
 import com.example.admin.smartdiaper.activity.SetupFragment;
 import com.example.admin.smartdiaper.activity.TimeLineFragment;
@@ -111,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
                 switch (msg.what)
                 {
                     //排尿：数据库增加数据，发提醒，弹框，震动，响铃
-                    case (Constant.MSG_PEE):{
+                    case (Constant.MSG_PEE_MAIN):{
                         addRecord((long)msg.obj);//增加一条数据（数据库 & adapter 的list中 同步增加） //此处时间是1970开始至今的时间
                         sendNotification();   //发通知
                         showAlertDialog();   //弹框提醒
@@ -127,8 +123,12 @@ public class MainActivity extends AppCompatActivity {
                             Log.d(TAG, "handleMessage: get musicId from preference:" + index);
                             Reminder.ring(index, volume);  //响铃
                         }
-                        else
-                            Log.d(TAG, "handleMessage: else!!!!!!!!!!!!!!!!");
+
+                        //更改HomeFragment ui
+                        Message msg1 = new Message();
+                        msg1.what = Constant.MSG_PEE_HOME;
+                        msg1.obj = msg.obj;
+                        HomeFragment.handler.sendMessage(msg1);
                         break;
                     }
                     case (Constant.MSG_STORE):{
