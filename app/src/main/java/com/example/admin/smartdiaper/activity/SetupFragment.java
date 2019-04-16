@@ -101,8 +101,6 @@ public class SetupFragment extends PreferenceFragmentCompat implements SharedPre
             Message msg = new Message();
             msg.what = Constant.MSG_SET_MODE;
             MainActivity.handler.sendMessage(msg);
-
-
         }
 
     }

@@ -150,13 +150,14 @@ public class BleService extends Service {
                 new BleWriteCallback() {
                     @Override
                     public void onWriteSuccess(int i, int i1, byte[] bytes) {
-                        Log.d(TAG, "写入时间和状态: "+ HexUtil.encodeHexStr(bytes));
-                        Toast.makeText(BleService.this, "状态设置成功！", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "写入时间和模式: "+ HexUtil.encodeHexStr(bytes));
+                        if(timeOrMode == Constant.MODE)
+                            Toast.makeText(BleService.this, "模式设置成功！", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onWriteFailure(BleException e) {
-                        Log.e(TAG, "onWriteFailure: 写入时间和状态失败！");
+                        Log.e(TAG, "onWriteFailure: 写入时间和模式失败！");
                         Log.e(TAG, "onWriteFailure: "+e.getDescription());
                         //此时要重置状态
                         if(timeOrMode == Constant.MODE)
@@ -167,8 +168,8 @@ public class BleService extends Service {
                             editor.putBoolean("save_power",!preferences.getBoolean("save_power",false));
 
                             editor.commit();
-                            Log.d(TAG, "onWriteFailure: 由于向硬件写入状态失败，已经重置模式");
-                            Toast.makeText(BleService.this, "向硬件写入状态失败,请确认蓝牙连接后重试", Toast.LENGTH_SHORT).show();
+                            Log.d(TAG, "onWriteFailure: 由于向硬件写入模式失败，已经重置模式");
+                            Toast.makeText(BleService.this, "向硬件写入模式失败,请确认蓝牙连接后重试", Toast.LENGTH_SHORT).show();
                         }
 
                     }

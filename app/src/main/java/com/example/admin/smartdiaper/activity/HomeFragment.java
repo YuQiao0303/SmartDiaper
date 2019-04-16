@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.example.admin.smartdiaper.MainActivity;
 import com.example.admin.smartdiaper.MyApplication;
 import com.example.admin.smartdiaper.R;
 import com.example.admin.smartdiaper.constant.Constant;
@@ -60,6 +61,20 @@ public class HomeFragment extends Fragment{
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
         savePower.setChecked(preferences.getBoolean("save_power",false));
         Log.d(TAG, "onCreateView: save_Power from preference+" + preferences.getBoolean("save_power",false));
+        if(!savePower.isChecked())
+        {
+            //显示当前温湿度
+            currentHumidity.setVisibility(View.VISIBLE);
+            currentTemperature.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            //不显示当前温湿度
+            currentHumidity.setVisibility(View.GONE);
+            currentTemperature.setVisibility(View.GONE);
+        }
+
+
         savePower.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
@@ -68,12 +83,23 @@ public class HomeFragment extends Fragment{
                 if(savePower.isChecked())
                 {
                     editor.putBoolean("save_power",true);
+                    //不显示当前温湿度
+                    currentHumidity.setVisibility(View.GONE);
+                    currentTemperature.setVisibility(View.GONE);
                 }
                 else{
                     editor.putBoolean("save_power",false);
+                    //显示当前温湿度
+                    currentHumidity.setVisibility(View.VISIBLE);
+                    currentTemperature.setVisibility(View.VISIBLE);
+
                 }
                 editor.commit();
                 Log.d(TAG, "onClick: save_power from home " + savePower.isChecked());
+                //发消息让MainActivity 调用BleService的方法来设置硬件模式
+                Message msg = new Message();
+                msg.what = Constant.MSG_SET_MODE;
+                MainActivity.handler.sendMessage(msg);
             }
         });
         return view;
