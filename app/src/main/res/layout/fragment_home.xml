@@ -8,25 +8,29 @@
     <TextView
         android:text="上次排尿时间："
         android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
+        android:textAlignment="center"
         />
     <TextView
         android:id="@+id/last_time"
         android:text="xx年xx月xx日xx：xx：xx，几小时几分钟前"
         android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
+        android:textAlignment="center"
         />
     <TextView
         android:id="@+id/next_time"
         android:text="预计下次排尿时间："
         android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
+        android:textAlignment="center"
         />
+
     <TextView
-        android:text="xx年xx月xx日xx：xx：xx，几小时几分钟后"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        />
+        android:text="xx年xx月xx日xx：xx：xx，几小时几分钟后"
+        android:textAlignment="center"/>
     <Switch
         android:id="@+id/save_power_home"
         android:layout_width="match_parent"
@@ -36,18 +40,20 @@
         android:id="@+id/current_temperature"
         android:text="当前温度："
         android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
+        android:textAlignment="center"
         />
     <TextView
         android:id="@+id/current_humidity"
         android:text="当前湿度："
         android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        />
-    <Button
-        android:id="@+id/send_notice"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="send notice"/>
+        android:textAlignment="center"
+        />
+    <!--<Button-->
+        <!--android:id="@+id/send_notice"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="send notice"/>-->
 
 </LinearLayout>

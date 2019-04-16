@@ -46,7 +46,7 @@ public class HomeFragment extends Fragment{
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-        Button rdmindTest = view.findViewById(R.id.send_notice);
+
         final TextView lastTime = view.findViewById(R.id.last_time);
         final TextView currentTemperature = view.findViewById(R.id.current_temperature);
         final TextView currentHumidity = view.findViewById(R.id.current_humidity);

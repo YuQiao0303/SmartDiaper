@@ -7,6 +7,16 @@
     tools:context="activity.TimeLineFragment">
 
     <TextView
+        android:id="@+id/title_timeline"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="Title Text"
+        android:textColor="#fff"
+        android:textSize="24sp" />
+    <TextView
         android:id="@+id/no_record_yet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
