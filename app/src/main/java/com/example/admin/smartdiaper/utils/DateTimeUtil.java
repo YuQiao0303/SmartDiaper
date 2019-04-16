@@ -18,6 +18,15 @@ public class DateTimeUtil {
         currentTimeInSeconds=System.currentTimeMillis()/1000-ca.getTimeInMillis()/1000;
         return currentTimeInSeconds;
     }
+
+    //把4字节的时间2000开始的时间  转换为  8字节   1970 开始的时间
+    public static long mcuTimeToAndroidTime(int mcuTime){
+        long androidTime = 0;
+        Calendar ca=Calendar.getInstance();
+        ca.set(2000,1,1,0,0,0);
+//        ca.getTimeInMillis()/1000;
+        return androidTime;
+    }
     /**
      * 系统时间转换为年月日
      * @param timestamp

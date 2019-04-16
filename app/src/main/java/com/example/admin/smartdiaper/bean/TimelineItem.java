@@ -1,9 +1,6 @@
 package com.example.admin.smartdiaper.bean;
 
-/**
- * 存储数据bena类
- * Created by wen on 2017/6/14.
- */
+
 
 public class TimelineItem {
 

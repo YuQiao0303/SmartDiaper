@@ -1,8 +1,14 @@
 package com.example.admin.smartdiaper.activity;
 
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import android.os.IBinder;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.v14.preference.SwitchPreference;
 import android.support.v4.app.Fragment;
@@ -15,7 +21,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.admin.smartdiaper.MainActivity;
+import com.example.admin.smartdiaper.MyApplication;
 import com.example.admin.smartdiaper.R;
+import com.example.admin.smartdiaper.ble.BleService;
+import com.example.admin.smartdiaper.constant.Constant;
 
 import me.zhanghai.android.seekbarpreference.SeekBarPreference;
 
@@ -24,6 +34,9 @@ public class SetupFragment extends PreferenceFragmentCompat implements SharedPre
     SwitchPreference ring;
     ListPreference ringMusic;
     SeekBarPreference ringVolume;
+    SwitchPreference savePower;
+
+
     public SetupFragment() {
         // Required empty public constructor
     }
@@ -37,6 +50,7 @@ public class SetupFragment extends PreferenceFragmentCompat implements SharedPre
         ring = (SwitchPreference)findPreference("ring");
         ringMusic = (ListPreference)findPreference("ring_music");
         ringVolume = (SeekBarPreference)findPreference("ring_volume");
+        savePower = (SwitchPreference)findPreference("save_power");
 
     }
 
@@ -51,25 +65,25 @@ public class SetupFragment extends PreferenceFragmentCompat implements SharedPre
         }
     }
 
-    /**
-     * 鼠标单击事件
-     * listview可以播放音乐
-     * @param preference
-     * @return
-     */
-    @Override
-    public boolean onPreferenceTreeClick(Preference preference){
-        switch (preference.getKey())
-        {
-
-            case "ring" :{
-                //播放音乐
-                break;
-            }
-        }
-
-        return super.onPreferenceTreeClick(preference);
-    }
+//    /**
+//     * 鼠标单击事件
+//     * listview可以播放音乐
+//     * @param preference
+//     * @return
+//     */
+//    @Override
+//    public boolean onPreferenceTreeClick(Preference preference){
+//        switch (preference.getKey())
+//        {
+//
+//            case "ring" :{
+//                //播放音乐
+//                break;
+//            }
+//        }
+//
+//        return super.onPreferenceTreeClick(preference);
+//    }
 
     /**
      * 设置更改事件
@@ -80,6 +94,16 @@ public class SetupFragment extends PreferenceFragmentCompat implements SharedPre
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         Log.d(TAG, "onSharedPreferenceChanged: key = " + key);
         setAll();
+
+        if(key.equals("save_power") )
+        {
+
+            Message msg = new Message();
+            msg.what = Constant.MSG_SET_MODE;
+            MainActivity.handler.sendMessage(msg);
+
+
+        }
 
     }
 

@@ -8,16 +8,20 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 
 import android.bluetooth.BluetoothDevice;
+import android.content.ComponentName;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 
 import android.preference.PreferenceManager;
@@ -30,8 +34,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.clj.fastble.BleManager;
+import com.clj.fastble.callback.BleWriteCallback;
 import com.clj.fastble.data.BleDevice;
 
+import com.clj.fastble.exception.BleException;
+import com.clj.fastble.utils.HexUtil;
 import com.example.admin.smartdiaper.activity.HomeFragment;
 import com.example.admin.smartdiaper.activity.SetupFragment;
 import com.example.admin.smartdiaper.activity.TimeLineFragment;
@@ -53,6 +61,25 @@ public class MainActivity extends AppCompatActivity {
     public static Handler handler;  //处理BleService传来的提醒
     //数据库
     private MyDatabaseHelper dbHelper;
+
+
+    //绑定BleService
+
+    private BleService.MyBinder myBinder;
+    private ServiceConnection connection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            Log.d(TAG, "onServiceConnected: ");
+            myBinder = (BleService.MyBinder) service;
+            myBinder.setSavePowerMode();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,26 +108,43 @@ public class MainActivity extends AppCompatActivity {
         handler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
-                if (msg.what == Constant.MSG_PEE) {
+                switch (msg.what)
+                {
+                    //排尿：数据库增加数据，发提醒，弹框，震动，响铃
+                    case (Constant.MSG_PEE):{
+                        addRecord((long)msg.obj);//增加一条数据（数据库 & adapter 的list中 同步增加） //此处时间是1970开始至今的时间
+                        sendNotification();   //发通知
+                        showAlertDialog();   //弹框提醒
+                        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
 
-                    addRecord((long)msg.obj);//增加一条数据（数据库 & adapter 的list中 同步增加）
-                    sendNotification();   //发通知
-                    showAlertDialog();   //弹框提醒
-                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
+                        if (preferences.getBoolean("vibrate", true)) {
+                            Reminder.vibrate();  //震动
+                        }
+                        if (preferences.getBoolean("ring", true)) {
+                            int volume = preferences.getInt("ring_volume", 100);
+                            Log.d(TAG, "handleMessage: get volume from preference:" + volume);
+                            int index = Integer.valueOf(preferences.getString("ring_music", "0")).intValue();
+                            Log.d(TAG, "handleMessage: get musicId from preference:" + index);
+                            Reminder.ring(index, volume);  //响铃
+                        }
+                        else
+                            Log.d(TAG, "handleMessage: else!!!!!!!!!!!!!!!!");
+                        break;
+                    }
+                    case (Constant.MSG_SET_MODE):{
+                        Log.d(TAG, "handleMessage: MainActivity收到设置模式的消息");
+                        Intent bindIntent = new Intent(MainActivity.this, BleService.class );
+                        //BIND_AUTO_CREATE 表示在活动和服务进行绑定后自动创建服务。
+                        //这会使得MyService中的onCreate() 方法得到执行， 但onStartCommand() 方法不会执行。
+                        //bindService(bindIntent, connection, BIND_AUTO_CREATE); // 绑定服务,执行onBind。如果之前没创建则还要执行onCreate
+                        bindService(bindIntent,connection, Context.BIND_AUTO_CREATE);
+                        //unbindService(connection); // 解绑服务 ，调用onDestroy()
+                    }
 
-                    if (preferences.getBoolean("vibrate", true)) {
-                        Reminder.vibrate();  //震动
-                    }
-                    if (preferences.getBoolean("ring", true)) {
-                        int volume = preferences.getInt("ring_volume", 100);
-                        Log.d(TAG, "handleMessage: get volume from preference:" + volume);
-                        int index = Integer.valueOf(preferences.getString("ring_music", "0")).intValue();
-                        Log.d(TAG, "handleMessage: get musicId from preference:" + index);
-                        Reminder.ring(index, volume);  //响铃
-                    }
-                    else
-                        Log.d(TAG, "handleMessage: else!!!!!!!!!!!!!!!!");
+
+                    default :break;
                 }
+
             }
         };
     }

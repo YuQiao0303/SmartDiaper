@@ -5,7 +5,7 @@
     <!--蓝牙配对-->
     <string name="find_box">正在寻找SmartDiaper</string>
     <string name="device_scan">正在扫描</string>
-    <string name="ble_name">AIWAC_DIAPER</string>
+    <string name="ble_name">SmartDiaper</string>
 
 
     <!--暂无记录的显示-->
