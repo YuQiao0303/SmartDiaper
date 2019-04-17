@@ -71,8 +71,8 @@ public class HomeFragment extends Fragment{
             public void handleMessage(Message msg){
                 switch (msg.what){
                     case (Constant.MSG_UPDATE_TEMPERATURE_HUMIDITY):{
-                        currentTemperature.setText("当前温度： "+ msg.arg1 + " ℃");
-                        currentHumidity.setText("当前湿度： "+ msg.arg2 );
+                        currentTemperature.setText(""+ msg.arg1 + " ℃");
+                        currentHumidity.setText(""+ msg.arg2 );
                         break;
                     }
                     case(Constant.MSG_PEE_HOME):{

@@ -21,7 +21,7 @@
     <PreferenceCategory
         android:key="remind"
         android:title="提醒设置"
-
+        android:summary="您可以设置提醒更换纸尿裤的方式"
         >
         <SwitchPreference
             android:key="vibrate"
