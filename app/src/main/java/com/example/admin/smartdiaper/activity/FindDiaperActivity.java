@@ -22,7 +22,6 @@ import com.clj.fastble.callback.BleScanCallback;
 import com.clj.fastble.data.BleDevice;
 import com.clj.fastble.exception.BleException;
 import com.clj.fastble.scan.BleScanRuleConfig;
-import com.example.admin.smartdiaper.MainActivity;
 import com.example.admin.smartdiaper.R;
 import com.example.admin.smartdiaper.permission.PermissionListener;
 

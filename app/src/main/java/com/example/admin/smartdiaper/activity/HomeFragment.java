@@ -13,14 +13,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.example.admin.smartdiaper.MainActivity;
 import com.example.admin.smartdiaper.MyApplication;
 import com.example.admin.smartdiaper.R;
-import com.example.admin.smartdiaper.bean.TimelineItem;
 import com.example.admin.smartdiaper.constant.Constant;
 import com.example.admin.smartdiaper.db.MyDatabaseHelper;
 import com.example.admin.smartdiaper.utils.DateTimeUtil;

@@ -72,7 +72,7 @@ public class TimeAdapter extends RecyclerView.Adapter{
 
             //时间节点图片
             if(timelineItem.isPredicted())
-                dotImage.setImageResource(R.mipmap.time_node_red);
+                dotImage.setImageResource(R.drawable.prediction_dot);
 
             //显示时间
             txtDateTime.setText(DateTimeUtil.toymdhms(timelineItem.getTime()));

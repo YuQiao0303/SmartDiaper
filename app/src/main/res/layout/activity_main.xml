@@ -5,7 +5,14 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="MainActivity">
+    tools:context=".activity.MainActivity">
+    <!--title bar-->
+    <TextView
+        android:id="@+id/title_bar"
+        style="@style/MyTitleBar"
+        android:text="首页"
+        />
+    <!--fragment-->
     <FrameLayout
         android:id="@+id/main_content"
         android:layout_width="match_parent"

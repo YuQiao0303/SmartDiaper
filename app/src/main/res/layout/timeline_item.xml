@@ -12,10 +12,10 @@
         android:layout_marginLeft="80dp">
         <View
             android:id="@+id/v_line"
-            android:layout_width="0.5dp"
+            android:layout_width="1.5dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:background="#666666" />
+            android:background="#FF888888" />
         <RelativeLayout
             android:id="@+id/rl_title"
             android:layout_width="match_parent"
@@ -28,7 +28,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="4dp"
-                android:src="@mipmap/time_node_green" />
+                android:src="@drawable/record_dot" />
 
             <TextView
                 android:id="@+id/txt_date_time"

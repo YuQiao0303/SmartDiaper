@@ -1,4 +1,4 @@
-package com.example.admin.smartdiaper;
+package com.example.admin.smartdiaper.activity;
 
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
@@ -33,12 +33,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import com.clj.fastble.data.BleDevice;
 
-import com.example.admin.smartdiaper.activity.HomeFragment;
-import com.example.admin.smartdiaper.activity.SetupFragment;
-import com.example.admin.smartdiaper.activity.TimeLineFragment;
+import com.example.admin.smartdiaper.MyApplication;
+import com.example.admin.smartdiaper.R;
 import com.example.admin.smartdiaper.ble.BleConnectService;
 //import com.example.admin.smartdiaper.ble.BleService;
 import com.example.admin.smartdiaper.ble.BleService;
@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
     private BleDevice bleDevice;//蓝牙设备
     private View homeView, timelineView, setupView; //bottom bar中的三个图标
+    private TextView titleBar;
     private BleStatusReceiver bleStatusReceiver;
     public static Handler handler;  //处理BleService传来的提醒
     //数据库
@@ -338,6 +339,7 @@ public class MainActivity extends AppCompatActivity {
      *----------------------------------------------------------------------*/
 
     private void setView(){
+        titleBar = findViewById(R.id.title_bar);
         addFragment(new HomeFragment());//默认是homefragment
         homeView = findViewById(R.id.bottombar_home);
         timelineView = findViewById(R.id.bottombar_timeline);
@@ -351,6 +353,8 @@ public class MainActivity extends AppCompatActivity {
                 selected();
                 homeView.setSelected(true);
                 addFragment(new HomeFragment());
+                titleBar.setText("首页");
+
             }
         });
 
@@ -361,6 +365,7 @@ public class MainActivity extends AppCompatActivity {
                 selected();
                 timelineView.setSelected(true);
                 addFragment(new TimeLineFragment());
+                titleBar.setText("时间轴");
             }
         });
 
@@ -371,6 +376,7 @@ public class MainActivity extends AppCompatActivity {
                 selected();
                 setupView.setSelected(true);
                 addFragment(new SetupFragment());
+                titleBar.setText("设置");
             }
         });
     }

@@ -22,7 +22,7 @@ import com.clj.fastble.callback.BleWriteCallback;
 import com.clj.fastble.data.BleDevice;
 import com.clj.fastble.exception.BleException;
 import com.clj.fastble.utils.HexUtil;
-import com.example.admin.smartdiaper.MainActivity;
+import com.example.admin.smartdiaper.activity.MainActivity;
 import com.example.admin.smartdiaper.MyApplication;
 import com.example.admin.smartdiaper.activity.HomeFragment;
 import com.example.admin.smartdiaper.constant.Constant;
