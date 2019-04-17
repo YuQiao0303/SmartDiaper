@@ -13,20 +13,25 @@
             android:key="save_power"
             android:title="省电模式"
             android:summary="当您打开省电模式时，无法查看实时温度，但仍可以提醒~"
+            android:icon="@mipmap/ic_save_power"
             android:defaultValue="false"/>
 
     </PreferenceCategory>
     <!-- 提醒设置 -->
     <PreferenceCategory
         android:key="remind"
-        android:title="提醒设置">
+        android:title="提醒设置"
+
+        >
         <SwitchPreference
             android:key="vibrate"
             android:title="震动"
+            android:icon="@mipmap/ic_vibrate"
             android:defaultValue="true"/>
         <SwitchPreference
             android:key="ring"
             android:title="响铃"
+            android:icon="@mipmap/ic_ring"
             android:defaultValue="true"/>
         <ListPreference
             android:key="ring_music"
@@ -35,7 +40,8 @@
             android:dialogTitle="请选择提醒铃声"
             android:entries="@array/ring_music_name"
             android:entryValues="@array/ring_music_id"
-            android:defaultValue="0"/>
+            android:defaultValue="0"
+            android:icon="@mipmap/ic_music"/>
 
 
         <me.zhanghai.android.seekbarpreference.SeekBarPreference
@@ -43,7 +49,9 @@
             android:max="100"
             android:defaultValue="100"
             android:title="音量"
-            android:summary="什么情况" />
+            android:summary="什么情况"
+            android:icon = "@mipmap/ic_volume"
+            />
     </PreferenceCategory>
 
 
