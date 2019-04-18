@@ -61,7 +61,12 @@ public class HomeFragment extends Fragment{
         final RelativeLayout currentState = view.findViewById(R.id.current_state);
 
         //当前温湿度
-
+        Bundle bundle = getArguments();
+        if(bundle!= null)
+        {
+            currentHumidity.setText(""+bundle.getInt("humidity"));  //注意，如果直接传int会被当成resource ID 来用！
+            currentTemperature.setText(""+bundle.getInt("temperature") + "℃");
+        }
         //设置时间轴：点的颜色，txt显示的文字，背景颜色
         nextTimeDot.setImageResource(R.drawable.prediction_dot);
         lastTimeTxt.setText("上次排尿时间：");

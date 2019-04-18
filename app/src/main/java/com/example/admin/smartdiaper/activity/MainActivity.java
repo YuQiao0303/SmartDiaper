@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         public void onServiceConnected(ComponentName name, IBinder service) {
             Log.d(TAG, "onServiceConnected: ");
             myBinder = (BleService.MyBinder) service;
-            myBinder.setSavePowerMode();
+
         }
 
         @Override
@@ -84,6 +84,9 @@ public class MainActivity extends AppCompatActivity {
 
         //数据库初始化
         initDatabase();
+        //bind service
+        Intent bindIntent = new Intent(MainActivity.this, BleService.class);
+        bindService(bindIntent, connection, Context.BIND_AUTO_CREATE);
         //设置三个Fragment
         setView();
 
@@ -139,12 +142,12 @@ public class MainActivity extends AppCompatActivity {
                         Log.d(TAG, "handleMessage: MainActivity收到设置模式的消息");
                         if (myBinder == null) {
                             Intent bindIntent = new Intent(MainActivity.this, BleService.class);
-                            //BIND_AUTO_CREATE 表示在活动和服务进行绑定后自动创建服务。
-                            //这会使得MyService中的onCreate() 方法得到执行， 但onStartCommand() 方法不会执行。
-                            //bindService(bindIntent, connection, BIND_AUTO_CREATE); // 绑定服务,执行onBind。如果之前没创建则还要执行onCreate
                             bindService(bindIntent, connection, Context.BIND_AUTO_CREATE);
+                            Log.d(TAG, "handleMessage: myBinder == null");
+                            myBinder.setSavePowerMode();
                         }
                         else{
+                            Log.d(TAG, "handleMessage: myBinder is fine");
                             myBinder.setSavePowerMode();
                         }
                     }
@@ -156,7 +159,22 @@ public class MainActivity extends AppCompatActivity {
             }
         };
     }
+    @Override
+    protected void onResume() {
+        Log.d(TAG, "onResume: ");
+        super.onResume();
+        ble();
+        //rebind bleService
+        if (myBinder == null) {
+            Intent bindIntent = new Intent(MainActivity.this, BleService.class);
+            bindService(bindIntent, connection, Context.BIND_AUTO_CREATE);
+            Log.d(TAG, "onResume: myBinder == null ,rebind");
+        }
+        else{
+            Log.d(TAG, "onResume: myBinder is fine");
 
+        }
+    }
     /**
      * -----------------------------------------------------------------------
      * 通知相关
@@ -249,10 +267,7 @@ public class MainActivity extends AppCompatActivity {
      * ----------------------------------------------------------------------
      */
 
-    @Override
-    protected void onResume() {
-        Log.d(TAG, "onResume: ");
-        super.onResume();
+    private void ble(){
         //
         //开启蓝牙服务
         if (getIntent().getParcelableExtra("bleDevice") != null) {
@@ -286,6 +301,7 @@ public class MainActivity extends AppCompatActivity {
         registerReceiver(bleStatusReceiver, connectedFilter);
         registerReceiver(bleStatusReceiver, disConnectedFilter);
     }
+
 
     /**-----------------------------------------------------------------------
      *                       数据库相关
@@ -340,6 +356,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void setView(){
         titleBar = findViewById(R.id.title_bar);
+
+
+
         addFragment(new HomeFragment());//默认是homefragment
         homeView = findViewById(R.id.bottombar_home);
         timelineView = findViewById(R.id.bottombar_timeline);
@@ -352,7 +371,18 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "onClick: homeView");
                 selected();
                 homeView.setSelected(true);
-                addFragment(new HomeFragment());
+
+                HomeFragment homeFragment  = new HomeFragment();
+                if(myBinder!=null)
+                {
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("temperature" ,myBinder.getTemperature());
+                    bundle.putInt("humidity" ,myBinder.getHumidity());
+                    homeFragment.setArguments(bundle);
+                }
+
+                addFragment(homeFragment);
+
                 titleBar.setText("首页");
 
             }
