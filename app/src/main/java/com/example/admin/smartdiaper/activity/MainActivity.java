@@ -32,6 +32,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
@@ -68,7 +69,12 @@ public class MainActivity extends AppCompatActivity {
         public void onServiceConnected(ComponentName name, IBinder service) {
             Log.d(TAG, "onServiceConnected: ");
             myBinder = (BleService.MyBinder) service;
-
+            //更新home fragment 中当前温湿度
+            Message msg = new Message();
+            msg.what = Constant.MSG_UPDATE_TEMPERATURE_HUMIDITY;
+            msg.arg1 = myBinder.getTemperature();
+            msg.arg2 = myBinder.getHumidity();
+            HomeFragment.handler.sendMessage(msg);
         }
 
         @Override
