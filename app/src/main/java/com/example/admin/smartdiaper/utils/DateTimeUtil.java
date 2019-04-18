@@ -4,6 +4,7 @@ import android.util.Log;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * 日期转换 wen
@@ -47,6 +48,162 @@ public class DateTimeUtil {
         }
         return num;
     }
+
+    /**
+     * 将long类型的time转换为“刚刚”，“2分钟前”，“昨天”等描述的字符串
+     * @param time long 类型，从1970年1.1的0点，到某一时刻的毫秒数
+     * @return
+     */
+    public static String time2ShowString(long time){
+        String str = "";
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+        String timestr = format.format(time);
+
+        long currentTime = System.currentTimeMillis();
+        //目标时间
+        Calendar targetCalendar = Calendar.getInstance();
+        targetCalendar.setTimeInMillis(time);
+        //现在时间
+        Calendar nowCalendar=Calendar.getInstance();
+        nowCalendar.setTimeInMillis(System.currentTimeMillis());
+        //今天
+        Date dateToday = new Date();
+        Calendar today = Calendar.getInstance();
+        today.setTime(dateToday);
+        //昨天
+        Calendar yesterday  =Calendar.getInstance();
+        yesterday.setTime(dateToday);
+        yesterday.add(Calendar.DATE,-1);
+        //前天
+        Calendar oneDayAgo  =Calendar.getInstance();
+        oneDayAgo.setTime(dateToday);
+        yesterday.add(Calendar.DATE,-2);
+        //明天
+        Calendar tomorrow  =Calendar.getInstance();
+        oneDayAgo.setTime(dateToday);
+        yesterday.add(Calendar.DATE,1);
+        //后天
+        Calendar oneDayLater  =Calendar.getInstance();
+        oneDayAgo.setTime(dateToday);
+        yesterday.add(Calendar.DATE,2);
+
+        if(targetCalendar.get(Calendar.YEAR) != nowCalendar.get(Calendar.YEAR) )
+        {
+            //不是同一年，直接显示
+            return time2ShowString(time);
+        }
+        if(targetCalendar.get(Calendar.DATE) == today.get(Calendar.DATE))
+        {
+            return "今天 " + timestr;
+        }
+        else if(targetCalendar.get(Calendar.DATE) == yesterday.get(Calendar.DATE))
+        {
+            return "昨天 " + timestr;
+        }
+        else if(targetCalendar.get(Calendar.DATE) == oneDayAgo.get(Calendar.DATE))
+        {
+            return "前天 " + timestr;
+        }
+        else if(targetCalendar.get(Calendar.DATE) == tomorrow.get(Calendar.DATE))
+        {
+            return "明天 " + timestr;
+        }
+        else if(targetCalendar.get(Calendar.DATE) == oneDayLater.get(Calendar.DATE))
+        {
+            return "后天 " + timestr;
+        }
+
+
+
+//
+//        if(targetCalendar.get(Calendar.DAY_OF_YEAR) == nowCalendar.get(Calendar.DAY_OF_YEAR) ){
+//            //今天
+//            str +="今天 " + timestr;
+//            return str;
+//        }
+//        //是今年但不是今天
+//        //判断是否是昨天
+//        nowCalendar.add(Calendar.DATE,-1);
+//        if(targetCalendar.get(Calendar.DAY_OF_YEAR) == nowCalendar.get(Calendar.DAY_OF_YEAR) ){
+//            //昨天
+//            str +="昨天 "+ timestr;
+//            return str;
+//        }
+//        //是今年但不是今天也不是昨天
+//        //判断是否是前天
+//        nowCalendar.add(Calendar.DATE,-1);
+//        if(targetCalendar.get(Calendar.DAY_OF_YEAR) == nowCalendar.get(Calendar.DAY_OF_YEAR) ){
+//            //前天
+//            str +="前天 "+ timestr;
+//            return str;
+//        }
+//        //是今年，但不是今天、昨天、前天
+//
+//        Calendar yesterdayCalendar = Calendar.getInstance();
+//        yesterdayCalendar.setTimeInMillis(System.currentTimeMillis());
+//        yesterdayCalendar.add(Calendar.DATE,-1);
+
+
+
+//
+//        long difference = (currentTime - time)/1000; //time到现在的秒数
+//        if(difference < 60 )   //1分钟以内显示为：“刚刚”
+//        {
+//            str = "刚刚";
+//        }
+//        else if (difference<3600)  //一小时以内显示为：“x分钟前”
+//        {
+//            str = difference/60 + "分钟前";
+//        }
+//        else if(difference <3600 * 24)  //一天之内，显示为“x小时x分钟前”
+//        {
+//            long  differenceInminutes = difference/60;
+//            long minutes = differenceInminutes % 60;
+//            long hours = differenceInminutes /60;
+//            str = hours + "小时" + minutes +"分钟";
+//        }
+//        else if(difference < 3600 * 48) //昨天
+//        {
+//
+//        }
+        return str;
+    }
+
+//    /**
+//     * 如果是今天，昨，前天，返回今天昨天前天；否则返回yyyy-mm-dd
+//     * @param time
+//     * @return
+//     */
+//    public static String getDate(long time){
+//        String str = "";
+//        long currentTime = System.currentTimeMillis();
+//
+//        Calendar nowCalendar=Calendar.getInstance();
+//        nowCalendar.setTimeInMillis(currentTime);
+//
+//        long difference = (currentTime - time)/1000; //time到现在的秒数
+//        if(difference < 60 )   //1分钟以内显示为：“刚刚”
+//        {
+//            str = "刚刚";
+//        }
+//        else if (difference<3600)  //一小时以内显示为：“x分钟前”
+//        {
+//            str = difference/60 + "分钟前";
+//        }
+//        else if(difference <3600 * 24)  //一天之内，显示为“x小时x分钟前”
+//        {
+//            long  differenceInminutes = difference/60;
+//            long minutes = differenceInminutes % 60;
+//            long hours = differenceInminutes /60;
+//            str = hours + "小时" + minutes +"分钟";
+//        }
+//        else if(difference < 3600 * 48) //昨天
+//        {
+//
+//        }
+//        return str;
+//    }
+
     /**
      * 系统时间转换为年月日
      * @param timestamp
@@ -64,7 +221,7 @@ public class DateTimeUtil {
     }
 
     //只有这一个用到
-    public static String toymdhms(long timestamp){
+    public static String timestamp2whole(long timestamp){
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return format.format(timestamp);
     }

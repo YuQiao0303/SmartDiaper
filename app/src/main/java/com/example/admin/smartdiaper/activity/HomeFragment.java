@@ -87,7 +87,7 @@ public class HomeFragment extends Fragment{
             long time = cursor.getLong(0);
             //long time = cursor.getLong(cursor.getColumnIndex("time"));
             Log.d(TAG, "time is " + time);
-            lastTime.setText(DateTimeUtil.toymdhms(time));
+            lastTime.setText(DateTimeUtil.time2ShowString(time));
         }
         else
             Log.d(TAG, "初始化“上次排尿时间”时，查询数据库失败");
@@ -98,7 +98,7 @@ public class HomeFragment extends Fragment{
             long time = cursor1.getLong(0);
             //long time = cursor.getLong(cursor.getColumnIndex("time"));
             Log.d(TAG, "time is " + time);
-            nextTime.setText(DateTimeUtil.toymdhms(time));
+            nextTime.setText(DateTimeUtil.time2ShowString(time));
         }
         else
             Log.d(TAG, "初始化“预计下次排尿时间”时，查询数据库失败");
@@ -115,7 +115,7 @@ public class HomeFragment extends Fragment{
                         break;
                     }
                     case(Constant.MSG_PEE_HOME):{
-                        lastTime.setText(DateTimeUtil.toymdhms((long)msg.obj));
+                        lastTime.setText(DateTimeUtil.time2ShowString((long)msg.obj));
                         break;
                     }
                     default:break;
