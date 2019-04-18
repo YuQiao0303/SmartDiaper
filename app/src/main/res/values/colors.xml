@@ -9,7 +9,7 @@
     <color name="darkBlue">#1e5396</color>
     <color name="lightOrange">#fd9b28</color>
     <!--时间轴-->
-    <color name="colorTimeLine">#898888</color>
+    <color name="gray">#888888</color>
 </resources>
 
 

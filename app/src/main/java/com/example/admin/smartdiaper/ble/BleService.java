@@ -39,6 +39,9 @@ public class BleService extends Service {
     //上一次的温湿度
     private int lastTemperature;
     private int lastHumidity;
+    private int temperature = 25;
+    private int humidity = 66;
+
 
     //binder
     private MyBinder myBinder = new MyBinder();
@@ -51,6 +54,13 @@ public class BleService extends Service {
                 return ;
             }
             setDiaperTimeAndMode(Constant.MODE);
+        }
+
+        public int getTemperature(){
+            return temperature;
+        }
+        public int getHumidity(){
+            return humidity;
         }
     }
 
@@ -190,8 +200,8 @@ public class BleService extends Service {
         if(data[0] == 0x55 && data[1] == 0x55)
             return;
 
-        int temperature = data[0];
-        int humidity = data[1];
+        temperature = data[0];
+        humidity = data[1];
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
 
         //普通模式

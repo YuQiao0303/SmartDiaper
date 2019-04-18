@@ -13,11 +13,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
 import com.example.admin.smartdiaper.MyApplication;
 import com.example.admin.smartdiaper.R;
+import com.example.admin.smartdiaper.ble.BleService;
 import com.example.admin.smartdiaper.constant.Constant;
 import com.example.admin.smartdiaper.db.MyDatabaseHelper;
 import com.example.admin.smartdiaper.utils.DateTimeUtil;
@@ -44,14 +47,34 @@ public class HomeFragment extends Fragment{
 
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        final TextView lastTime = view.findViewById(R.id.last_time);
+        final View lastTimeTimeLine = view.findViewById(R.id.last_time_time_line);
+        final View nextTimeTimeLine = view.findViewById(R.id.next_time_time_line);
+
+        final TextView lastTime = lastTimeTimeLine.findViewById(R.id.right_txt);
+        final TextView nextTime = nextTimeTimeLine.findViewById(R.id.right_txt);
+
+        final TextView lastTimeTxt = lastTimeTimeLine.findViewById(R.id.left_txt);
+        final TextView nextTimeTxt = nextTimeTimeLine.findViewById(R.id.left_txt);
+        final ImageView nextTimeDot = nextTimeTimeLine.findViewById(R.id.dot_image);
         final TextView currentTemperature = view.findViewById(R.id.current_temperature);
         final TextView currentHumidity = view.findViewById(R.id.current_humidity);
-        //-------------查数据库--------------
+        final RelativeLayout currentState = view.findViewById(R.id.current_state);
+
+        //当前温湿度
+
+        //设置时间轴：点的颜色，txt显示的文字，背景颜色
+        nextTimeDot.setImageResource(R.drawable.prediction_dot);
+        lastTimeTxt.setText("上次排尿时间：");
+        nextTimeTxt.setText("预计下次排尿时间：");
+        lastTimeTxt.setBackground(null);
+        nextTimeTxt.setBackground(null);
+        lastTime.setBackground(null);
+        nextTime.setBackground(null);
+        //-------------查数据库，显示上次和预计下次排尿时间--------------
         //创建数据库
         dbHelper = new MyDatabaseHelper(MyApplication.getContext(), Constant.DB_NAME, null, 1);
         dbHelper.getWritableDatabase();   //检测有没有该名字的数据库，若没有则创建，同时调用dbHelper 的 onCreate 方法；若有就不会再创建了
-
+        //上次
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         //Cursor cursorPrediction = db.query(Constant.DB_PREDICTION_TABLE_NAME, null, null, null, null, null, "time desc");
         Cursor cursor = db.rawQuery("select MAX(time) from " + Constant.DB_RECORD_TABLE_NAME ,null);
@@ -64,6 +87,17 @@ public class HomeFragment extends Fragment{
         else
             Log.d(TAG, "初始化“上次排尿时间”时，查询数据库失败");
         cursor.close();
+        //下次
+        Cursor cursor1 = db.rawQuery("select MIN(time) from " + Constant.DB_PREDICTION_TABLE_NAME ,null);
+        if (cursor1.moveToFirst()) {
+            long time = cursor1.getLong(0);
+            //long time = cursor.getLong(cursor.getColumnIndex("time"));
+            Log.d(TAG, "time is " + time);
+            nextTime.setText(DateTimeUtil.toymdhms(time));
+        }
+        else
+            Log.d(TAG, "初始化“预计下次排尿时间”时，查询数据库失败");
+        cursor1.close();
         //---------------------------------------------
         //更新温湿度ui的handler
         handler = new Handler(){
@@ -85,7 +119,7 @@ public class HomeFragment extends Fragment{
             }
         };
 
-        //省电模式
+        //根据是否是省电模式来决定是否显示当前温湿度
         final Switch savePower = view.findViewById(R.id.save_power_home);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
         savePower.setChecked(preferences.getBoolean("save_power",false));
@@ -93,14 +127,12 @@ public class HomeFragment extends Fragment{
         if(!savePower.isChecked())
         {
             //显示当前温湿度
-            currentHumidity.setVisibility(View.VISIBLE);
-            currentTemperature.setVisibility(View.VISIBLE);
+            currentState.setVisibility(View.VISIBLE);
         }
         else
         {
             //不显示当前温湿度
-            currentHumidity.setVisibility(View.GONE);
-            currentTemperature.setVisibility(View.GONE);
+            currentState.setVisibility(View.GONE);
         }
 
 
@@ -113,14 +145,13 @@ public class HomeFragment extends Fragment{
                 {
                     editor.putBoolean("save_power",true);
                     //不显示当前温湿度
-                    currentHumidity.setVisibility(View.GONE);
-                    currentTemperature.setVisibility(View.GONE);
+                    currentState.setVisibility(View.GONE);
+
                 }
                 else{
                     editor.putBoolean("save_power",false);
                     //显示当前温湿度
-                    currentHumidity.setVisibility(View.VISIBLE);
-                    currentTemperature.setVisibility(View.VISIBLE);
+                    currentState.setVisibility(View.VISIBLE);
 
                 }
                 editor.commit();
