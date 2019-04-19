@@ -8,6 +8,7 @@
     <color name="lightBlue">#ceecf7</color>
     <color name="darkBlue">#1e5396</color>
     <color name="lightOrange">#fd9b28</color>
+    <color name="deepOrange">#e63b13</color>
     <!--时间轴-->
     <color name="gray">#888888</color>
 </resources>

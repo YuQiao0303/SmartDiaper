@@ -4,16 +4,12 @@ import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Message;
-import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import com.clj.fastble.data.BleDevice;
-import com.example.admin.smartdiaper.MyApplication;
-import com.example.admin.smartdiaper.activity.HomeFragment;
+import com.example.admin.smartdiaper.activity.MainActivity;
 import com.example.admin.smartdiaper.activity.SetupFragment;
 import com.example.admin.smartdiaper.constant.Constant;
 //import com.example.admin.smartdiaper.utils.DateUtil;
@@ -40,10 +36,16 @@ public class BleStatusReceiver extends BroadcastReceiver {
             //连接上了
             Log.d(TAG, "onReceive: "+"蓝牙已连接");
             Toast.makeText(context,"蓝牙已连接", Toast.LENGTH_LONG).show();
-            //将设置中的蓝牙连接状态置为已连接
-            Message msg = new Message();
-            msg.what = Constant.MSG_CONNECTION;
-            SetupFragment.handler.sendMessage(msg);
+
+//            //设置中的蓝牙连接状态
+            //似乎有误，因为如果断开重连时尚未打开过SetupFragment，其handler就为null
+//            Message msg = new Message();
+//            msg.what = Constant.MSG_CONNECTION_SETUP;
+//            SetupFragment.handler.sendMessage(msg);
+
+            Message msg2 = new Message();
+            msg2.what = Constant.MSG_CONNECTION_MAIN;
+            MainActivity.handler.sendMessage(msg2);
 
         } else if (action.equals(BluetoothDevice.ACTION_ACL_DISCONNECTED)) {
             //蓝牙连接被切断
@@ -54,10 +56,14 @@ public class BleStatusReceiver extends BroadcastReceiver {
             intent2.putExtra("type","sysbroadcast");
             context.startService(intent2);
 
-            //将设置中的蓝牙连接状态置为已连接
-            Message msg = new Message();
-            msg.what = Constant.MSG_DISCONNECTION;
-            SetupFragment.handler.sendMessage(msg);
+//            //设置中的蓝牙连接状态
+//            Message msg = new Message();
+//            msg.what = Constant.MSG_DISCONNECTION_SETUP;
+//            SetupFragment.handler.sendMessage(msg);
+
+            Message msg2 = new Message();
+            msg2.what = Constant.MSG_DISCONNECTION_MAIN;
+            MainActivity.handler.sendMessage(msg2);
         }
 //        else if(action.equals(Constant.BLE_CON_ACTION)){
 //            Log.d(TAG, "onReceive: BLE_CON_ACTION");

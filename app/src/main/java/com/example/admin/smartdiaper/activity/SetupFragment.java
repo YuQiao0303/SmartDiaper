@@ -44,29 +44,29 @@ public class SetupFragment extends PreferenceFragmentCompat implements SharedPre
         bleStatus = findPreference("ble_status");
         bleReconnect = findPreference("ble_reconnect");
 
-        //初始化显示是否连上了蓝牙
-        Bundle bundle = getArguments();
-        if(bundle.getInt("connect") == 1)
-            bleStatus.setSummary("已连接");
-        else
-            bleStatus.setSummary("未连接");
-
-        //设置更改连接状态的handler
-        handler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                switch (msg.what) {
-                    case (Constant.MSG_DISCONNECTION): {
-                        bleStatus.setSummary("未连接");
-                        break;
-                    }
-                    case (Constant.MSG_CONNECTION): {
-                        bleStatus.setSummary("已连接");
-                        break;
-                    }
-                }
-            }
-        };
+//        //初始化显示是否连上了蓝牙
+//        Bundle bundle = getArguments();
+//        if(bundle.getInt("connect") == 1)
+//            bleStatus.setSummary("已连接");
+//        else
+//            bleStatus.setSummary("未连接");
+//
+//        //设置更改连接状态的handler
+//        handler = new Handler() {
+//            @Override
+//            public void handleMessage(Message msg) {
+//                switch (msg.what) {
+//                    case (Constant.MSG_DISCONNECTION_SETUP): {
+//                        bleStatus.setSummary("未连接");
+//                        break;
+//                    }
+//                    case (Constant.MSG_CONNECTION_SETUP): {
+//                        bleStatus.setSummary("已连接");
+//                        break;
+//                    }
+//                }
+//            }
+//        };
 
     }
 

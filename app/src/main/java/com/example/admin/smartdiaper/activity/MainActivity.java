@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
     private BleDevice bleDevice;//蓝牙设备
     private View homeView, timelineView, setupView; //bottom bar中的三个图标
+    TextView disconnect;
     private TextView titleBar;
     private BleStatusReceiver bleStatusReceiver;
     public static Handler handler;  //处理BleService传来的提醒
@@ -88,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        disconnect = findViewById(R.id.not_connected);
 
         //数据库初始化
         initDatabase();
@@ -96,6 +98,8 @@ public class MainActivity extends AppCompatActivity {
         bindService(bindIntent, connection, Context.BIND_AUTO_CREATE);
         //设置三个Fragment
         setView();
+
+
 
         //初始化铃声
         Reminder.initSoundPool();
@@ -146,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     case (Constant.MSG_STORE):{
                         addRecord((long)msg.obj);//增加一条数据（数据库 & adapter 的list中 同步增加） //此处时间是1970开始至今的时间
+                        break;
                     }
                     case (Constant.MSG_SET_MODE): {
                         Log.d(TAG, "handleMessage: MainActivity收到设置模式的消息");
@@ -159,8 +164,16 @@ public class MainActivity extends AppCompatActivity {
                             Log.d(TAG, "handleMessage: myBinder is fine");
                             myBinder.setSavePowerMode();
                         }
+                        break;
                     }
-
+                    case(Constant.MSG_CONNECTION_MAIN):{
+                        disconnect.setVisibility(View.GONE);
+                        break;
+                    }
+                    case(Constant.MSG_DISCONNECTION_MAIN):{
+                        disconnect.setVisibility(View.VISIBLE);
+                        break;
+                    }
 
                     default :break;
                 }
@@ -182,6 +195,15 @@ public class MainActivity extends AppCompatActivity {
         else{
             Log.d(TAG, "onResume: myBinder is fine");
 
+        }
+
+        //如果蓝牙连接上了，隐藏"蓝牙尚未连接"的提示语
+        if(bleDevice != null) {
+            Log.d(TAG, "onCreate: bleDevice != null");
+            if (BleManager.getInstance().isConnected(bleDevice)) {
+
+                disconnect.setVisibility(View.GONE);
+            }
         }
     }
     /**
