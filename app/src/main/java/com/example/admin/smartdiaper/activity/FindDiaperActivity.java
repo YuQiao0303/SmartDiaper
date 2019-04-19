@@ -87,6 +87,21 @@ public class FindDiaperActivity extends BaseActivity {
     }
 
     private void doScan(){
+        //-----------------------
+        //这段一直进不到if，测不了
+        //判断是否已连接
+        List<BleDevice> deviceList = BleManager.getInstance().getAllConnectedDevice();
+        if(deviceList.size()!=0)
+        {
+            Log.d(LOG_TAG, "doScan:  deviceList.size()!=0");
+            BleDevice bleDevice = deviceList.get(0);
+            Intent intent=new Intent(FindDiaperActivity.this,MainActivity.class);
+            intent.putExtra("bleDevice",bleDevice);  //把bleDevice 传给MainActivity
+            //启动MainActivity
+            startActivity(intent);
+            finish();
+        }
+        //------------------------------
         //配置扫描规则
         //这里要把附近所有蓝牙设备都显示出来，所以不配置规则
         //参考： https://github.com/Jasonchenlijian/FastBle/wiki/%E6%89%AB%E6%8F%8F%E5%8F%8A%E8%BF%9E%E6%8E%A5#%E9%85%8D%E7%BD%AE%E6%89%AB%E6%8F%8F%E8%A7%84%E5%88%99
@@ -182,6 +197,7 @@ public class FindDiaperActivity extends BaseActivity {
 
                 //启动MainActivity
                 startActivity(intent);
+                finish();
             }
 
             @Override

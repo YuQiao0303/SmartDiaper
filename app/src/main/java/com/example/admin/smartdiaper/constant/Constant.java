@@ -25,10 +25,9 @@ public interface Constant {
     int MSG_SET_MODE = 3;
     int MSG_STORE = 4;
     int MSG_PEE_HOME = 5;
-    int MSG_DISCONNECTION_SETUP = 6;
-    int MSG_CONNECTION_SETUP = 7;
-    int MSG_DISCONNECTION_MAIN = 8;
-    int MSG_CONNECTION_MAIN = 9;
+    int MSG_DISCONNECTION = 6;
+    int MSG_CONNECTION = 7;
+    int MSG_RECONNET = 8;
 
     //notification id
     int NOTIFICATION_PEE = 1;

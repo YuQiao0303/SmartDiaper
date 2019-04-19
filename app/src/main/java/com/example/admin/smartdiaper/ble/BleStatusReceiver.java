@@ -10,7 +10,6 @@ import android.widget.Toast;
 
 import com.clj.fastble.data.BleDevice;
 import com.example.admin.smartdiaper.activity.MainActivity;
-import com.example.admin.smartdiaper.activity.SetupFragment;
 import com.example.admin.smartdiaper.constant.Constant;
 //import com.example.admin.smartdiaper.utils.DateUtil;
 //import com.example.admin.smartdiaper.utils.SharedPreferencesUtils;
@@ -37,14 +36,9 @@ public class BleStatusReceiver extends BroadcastReceiver {
             Log.d(TAG, "onReceive: "+"蓝牙已连接");
             Toast.makeText(context,"蓝牙已连接", Toast.LENGTH_LONG).show();
 
-//            //设置中的蓝牙连接状态
-            //似乎有误，因为如果断开重连时尚未打开过SetupFragment，其handler就为null
-//            Message msg = new Message();
-//            msg.what = Constant.MSG_CONNECTION_SETUP;
-//            SetupFragment.handler.sendMessage(msg);
 
             Message msg2 = new Message();
-            msg2.what = Constant.MSG_CONNECTION_MAIN;
+            msg2.what = Constant.MSG_CONNECTION;
             MainActivity.handler.sendMessage(msg2);
 
         } else if (action.equals(BluetoothDevice.ACTION_ACL_DISCONNECTED)) {
@@ -56,13 +50,10 @@ public class BleStatusReceiver extends BroadcastReceiver {
             intent2.putExtra("type","sysbroadcast");
             context.startService(intent2);
 
-//            //设置中的蓝牙连接状态
-//            Message msg = new Message();
-//            msg.what = Constant.MSG_DISCONNECTION_SETUP;
-//            SetupFragment.handler.sendMessage(msg);
+
 
             Message msg2 = new Message();
-            msg2.what = Constant.MSG_DISCONNECTION_MAIN;
+            msg2.what = Constant.MSG_DISCONNECTION;
             MainActivity.handler.sendMessage(msg2);
         }
 //        else if(action.equals(Constant.BLE_CON_ACTION)){

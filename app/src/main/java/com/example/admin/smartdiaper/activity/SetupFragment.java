@@ -1,5 +1,6 @@
 package com.example.admin.smartdiaper.activity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -11,7 +12,10 @@ import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.util.Log;
 
+import com.clj.fastble.BleManager;
+import com.example.admin.smartdiaper.MyApplication;
 import com.example.admin.smartdiaper.R;
+import com.example.admin.smartdiaper.ble.BleConnectService;
 import com.example.admin.smartdiaper.constant.Constant;
 
 import me.zhanghai.android.seekbarpreference.SeekBarPreference;
@@ -44,29 +48,8 @@ public class SetupFragment extends PreferenceFragmentCompat implements SharedPre
         bleStatus = findPreference("ble_status");
         bleReconnect = findPreference("ble_reconnect");
 
-//        //初始化显示是否连上了蓝牙
-//        Bundle bundle = getArguments();
-//        if(bundle.getInt("connect") == 1)
-//            bleStatus.setSummary("已连接");
-//        else
-//            bleStatus.setSummary("未连接");
-//
-//        //设置更改连接状态的handler
-//        handler = new Handler() {
-//            @Override
-//            public void handleMessage(Message msg) {
-//                switch (msg.what) {
-//                    case (Constant.MSG_DISCONNECTION_SETUP): {
-//                        bleStatus.setSummary("未连接");
-//                        break;
-//                    }
-//                    case (Constant.MSG_CONNECTION_SETUP): {
-//                        bleStatus.setSummary("已连接");
-//                        break;
-//                    }
-//                }
-//            }
-//        };
+
+
 
     }
 
@@ -81,25 +64,31 @@ public class SetupFragment extends PreferenceFragmentCompat implements SharedPre
         }
     }
 
-//    /**
-//     * 鼠标单击事件
-//     * listview可以播放音乐
-//     * @param preference
-//     * @return
-//     */
-//    @Override
-//    public boolean onPreferenceTreeClick(Preference preference){
-//        switch (preference.getKey())
-//        {
-//
-//            case "ring" :{
-//                //播放音乐
-//                break;
-//            }
-//        }
-//
-//        return super.onPreferenceTreeClick(preference);
-//    }
+    /**
+     * 鼠标单击事件
+     * 重连蓝牙
+     * listview可以播放音乐
+     * @param preference
+     * @return
+     */
+    @Override
+    public boolean onPreferenceTreeClick(Preference preference){
+        switch (preference.getKey())
+        {
+
+            case "ble_reconnect" :{
+                Message msg = new Message();
+                msg.what = Constant.MSG_RECONNET;
+                MainActivity.handler.sendMessage(msg);
+//                BleManager.getInstance().disconnectAllDevice();
+//                Intent intent=new Intent(MyApplication.getContext(),FindDiaperActivity.class);
+//                startActivity(intent);
+                break;
+            }
+        }
+
+        return super.onPreferenceTreeClick(preference);
+    }
 
     /**
      * 设置更改事件

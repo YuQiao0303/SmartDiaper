@@ -32,7 +32,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.TextView;
 
@@ -166,14 +166,22 @@ public class MainActivity extends AppCompatActivity {
                         }
                         break;
                     }
-                    case(Constant.MSG_CONNECTION_MAIN):{
+                    case(Constant.MSG_CONNECTION):{
                         disconnect.setVisibility(View.GONE);
                         break;
                     }
-                    case(Constant.MSG_DISCONNECTION_MAIN):{
+                    case(Constant.MSG_DISCONNECTION):{
                         disconnect.setVisibility(View.VISIBLE);
                         break;
                     }
+                    case(Constant.MSG_RECONNET):{
+                        BleManager.getInstance().disconnectAllDevice();
+                        Intent intent=new Intent(MainActivity.this,FindDiaperActivity.class);
+                        startActivity(intent);
+                        finish();
+                        break;
+                    }
+
 
                     default :break;
                 }
@@ -469,6 +477,25 @@ public class MainActivity extends AppCompatActivity {
         //提交事务，调用commit方法提交。
         MfragmentTransactions.commit();
     }
+
+    /**
+     * 按返回键，回到home而不销毁当前activity
+     * @param keyCode
+     * @param event
+     * @return
+     */
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK){
+            Intent i = new Intent(Intent.ACTION_MAIN);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            i.addCategory(Intent.CATEGORY_HOME);
+            startActivity(i);
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
 
     @Override
     protected void onDestroy(){

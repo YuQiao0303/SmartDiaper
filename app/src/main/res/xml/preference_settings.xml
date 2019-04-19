@@ -7,12 +7,7 @@
     <PreferenceCategory
         android:title="蓝牙连接"
         >
-        <!--<Preference-->
-            <!--android:key="ble_status"-->
-            <!--android:title="蓝牙连接状态"-->
-            <!--android:summary="未连接"-->
-            <!--android:icon="@mipmap/ic_bluetooth_status"-->
-            <!--&gt;</Preference>-->
+
         <Preference
             android:key="ble_reconnect"
             android:title="重连蓝牙"
