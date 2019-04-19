@@ -220,7 +220,7 @@ public class BleService extends Service {
             msg.arg2 = humidity;
             HomeFragment.handler.sendMessage(msg);
             //判断是否提醒
-            boolean pee = (humidity >= 45 && lastHumidity<45);
+            boolean pee = (humidity >= 50 && lastHumidity<50);
             if(pee)
             {
                 sendPeeMessage();

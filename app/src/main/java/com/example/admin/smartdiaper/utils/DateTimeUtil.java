@@ -55,6 +55,7 @@ public class DateTimeUtil {
      * @return
      */
     public static String time2ShowString(long time){
+//        Log.d(TAG, "time2ShowString: start");
         String str = "";
         SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
         String timestr = format.format(time);
@@ -90,14 +91,17 @@ public class DateTimeUtil {
         if(targetCalendar.get(Calendar.YEAR) != nowCalendar.get(Calendar.YEAR) )
         {
             //不是同一年，直接显示
+//            Log.d(TAG, "time2ShowString: different year");
             return time2ShowString(time);
         }
         if(targetCalendar.get(Calendar.DATE) == today.get(Calendar.DATE))
         {
+            Log.d(TAG, "time2ShowString: today");
             return "今天 " + timestr;
         }
         else if(targetCalendar.get(Calendar.DATE) == yesterday.get(Calendar.DATE))
         {
+            Log.d(TAG, "time2ShowString: yesterday");
             return "昨天 " + timestr;
         }
         else if(targetCalendar.get(Calendar.DATE) == oneDayAgo.get(Calendar.DATE))

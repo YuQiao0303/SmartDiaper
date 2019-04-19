@@ -20,7 +20,6 @@ import android.widget.TextView;
 
 import com.example.admin.smartdiaper.MyApplication;
 import com.example.admin.smartdiaper.R;
-import com.example.admin.smartdiaper.ble.BleService;
 import com.example.admin.smartdiaper.constant.Constant;
 import com.example.admin.smartdiaper.db.MyDatabaseHelper;
 import com.example.admin.smartdiaper.utils.DateTimeUtil;
@@ -82,23 +81,42 @@ public class HomeFragment extends Fragment{
         //上次
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         //Cursor cursorPrediction = db.query(Constant.DB_PREDICTION_TABLE_NAME, null, null, null, null, null, "time desc");
-        Cursor cursor = db.rawQuery("select MAX(time) from " + Constant.DB_RECORD_TABLE_NAME ,null);
+        Cursor cursor = db.rawQuery("select count(id) , MAX(time) from " + Constant.DB_RECORD_TABLE_NAME ,null);
         if (cursor.moveToFirst()) {
-            long time = cursor.getLong(0);
-            //long time = cursor.getLong(cursor.getColumnIndex("time"));
-            Log.d(TAG, "time is " + time);
-            lastTime.setText(DateTimeUtil.time2ShowString(time));
+            if(cursor.getInt(0) != 0) //如果有记录
+            {
+                long time = cursor.getLong(1);
+                //long time = cursor.getLong(cursor.getColumnIndex("time"));  //这句话不行原因是 columeName 是MAX(time) 而不是 time
+                Log.d(TAG, "time is " + time);
+                Log.d(TAG, "onCreateView: column name: "+ cursor.getColumnName(0));
+                lastTime.setText(DateTimeUtil.time2ShowString(time));
+            }
+            else
+            {
+                Log.d(TAG, "onCreateView: count is "+ cursor.getInt(0));
+                Log.d(TAG, "onCreateView: max time is "+ cursor.getInt(1));
+                lastTime.setText(R.string.no_data_yet_short);
+            }
+
         }
         else
             Log.d(TAG, "初始化“上次排尿时间”时，查询数据库失败");
         cursor.close();
         //下次
-        Cursor cursor1 = db.rawQuery("select MIN(time) from " + Constant.DB_PREDICTION_TABLE_NAME ,null);
+        Cursor cursor1 = db.rawQuery("select count(id), MIN(time) from " + Constant.DB_PREDICTION_TABLE_NAME ,null);
         if (cursor1.moveToFirst()) {
-            long time = cursor1.getLong(0);
-            //long time = cursor.getLong(cursor.getColumnIndex("time"));
-            Log.d(TAG, "time is " + time);
-            nextTime.setText(DateTimeUtil.time2ShowString(time));
+            if(cursor1.getInt(1) !=0)  //如果有数据
+            {
+                long time = cursor1.getLong(1);
+                Log.d(TAG, "onCreateView: column name: "+ cursor.getColumnName(0));
+                Log.d(TAG, "time is " + time);
+                nextTime.setText(DateTimeUtil.time2ShowString(time));
+            }
+            else
+            {
+                nextTime.setText(R.string.no_data_yet_short);
+            }
+
         }
         else
             Log.d(TAG, "初始化“预计下次排尿时间”时，查询数据库失败");
@@ -115,7 +133,8 @@ public class HomeFragment extends Fragment{
                         break;
                     }
                     case(Constant.MSG_PEE_HOME):{
-                        lastTime.setText(DateTimeUtil.time2ShowString((long)msg.obj));
+                        lastTime.setText(DateTimeUtil.time2ShowString(((long[])msg.obj)[0]));
+                        nextTime.setText(DateTimeUtil.time2ShowString(((long[])msg.obj)[1]));
                         break;
                     }
                     default:break;

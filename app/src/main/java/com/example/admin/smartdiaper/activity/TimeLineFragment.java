@@ -41,7 +41,7 @@ public class TimeLineFragment extends Fragment{
     static TimeAdapter adapter;
 
     //数据库
-    private MyDatabaseHelper dbHelper;
+    private static MyDatabaseHelper dbHelper;
 
     //UI 控件
     private static TextView noRecordYet;
@@ -99,27 +99,28 @@ public class TimeLineFragment extends Fragment{
      *----------------------------------------------------------------------*/
     public static void addRecordInList(long time)
     {
-        //移除最上面的预测数据
-        if(list.size()>= Constant.PREDICTION_NUM) {
-            for (int i = 0; i < Constant.PREDICTION_NUM; i++) {
-                list.remove(0);
-            }
-        }
+//        //移除最上面的预测数据
+//        if(list.size()>= Constant.PREDICTION_NUM) {
+//            for (int i = 0; i < Constant.PREDICTION_NUM; i++) {
+//                list.remove(0);
+//            }
+//        }
+//
+//        //添加新的历史记录
+//        list.add(0,new TimelineItem(time, false,""));
+//        //添加新的预测数据
+//        for(int i=0;i<Constant.PREDICTION_NUM;i++)
+//            list.add(0,new TimelineItem(time, true,""));
+//
+//        //设置暂无数据的提示语不可见
+//        noRecordYet.setVisibility(View.GONE);
 
-        //添加新的历史记录
-        list.add(0,new TimelineItem(time, false,""));
-        //添加新的预测数据
-        for(int i=0;i<Constant.PREDICTION_NUM;i++)
-            list.add(0,new TimelineItem(time, true,""));
-
-        //设置暂无数据的提示语不可见
-        noRecordYet.setVisibility(View.GONE);
-
+        initData();
         //更新listView
         adapter.notifyDataSetChanged();
     }
 
-    private void initData() {
+    private static void initData() {
         Log.d(TAG, "initData: ");
         list.clear();
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -134,7 +135,7 @@ public class TimeLineFragment extends Fragment{
                 Log.d(TAG, "time is " + time);
                 Log.d(TAG, "id is " + id);
                 list.add(new TimelineItem(time, true,""));
-                Log.d(TAG, "initData: 在TimeLineFragment 中 读取预测数据库的值并显示");
+
             } while (cursorPrediction.moveToNext());
         }
         else

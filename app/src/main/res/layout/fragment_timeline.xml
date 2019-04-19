@@ -79,7 +79,7 @@
         android:layout_height="match_parent"
         android:textAlignment="center"
         android:gravity="center"
-        android:text="@string/no_record_yet" />
+        android:text="@string/no_data_yet" />
 
     <!--time line-->
     <android.support.v7.widget.RecyclerView

@@ -9,7 +9,9 @@
 
 
     <!--暂无记录的显示-->
-    <string name="no_record_yet">您刚开始使用智能纸尿裤，还没有历史记录哦~</string>
+    <string name="no_data_yet">您刚开始使用智能纸尿裤，还没有历史记录和预测数据哦~</string>
+    <string name="no_data_yet_short">还没有数据哦~</string>
+
 
     <!--音量-->
     <string name="ring_volume_default">100%</string>

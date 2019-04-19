@@ -71,10 +71,12 @@ public class TimeAdapter extends RecyclerView.Adapter{
             if(position % 2 ==0)
             {
                 leftTxt.setVisibility(View.GONE);
+                rightTxt.setVisibility(View.VISIBLE);
                 rightTxt.setText(DateTimeUtil.time2ShowString(timelineItem.getTime()));
             }
             else{
                 rightTxt.setVisibility(View.GONE);
+                leftTxt.setVisibility(View.VISIBLE);
                 leftTxt.setText(DateTimeUtil.time2ShowString(timelineItem.getTime()));
             }
 

@@ -137,7 +137,9 @@ public class MainActivity extends AppCompatActivity {
                         //更改HomeFragment ui
                         Message msg1 = new Message();
                         msg1.what = Constant.MSG_PEE_HOME;
-                        msg1.obj = msg.obj;
+                        long[] times ={(long)msg.obj,(long)msg.obj};
+
+                        msg1.obj = times;
                         HomeFragment.handler.sendMessage(msg1);
                         break;
                     }
