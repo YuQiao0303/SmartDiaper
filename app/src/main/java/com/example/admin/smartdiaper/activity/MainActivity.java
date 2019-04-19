@@ -36,6 +36,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import com.clj.fastble.BleManager;
 import com.clj.fastble.data.BleDevice;
 
 import com.example.admin.smartdiaper.MyApplication;
@@ -373,6 +374,7 @@ public class MainActivity extends AppCompatActivity {
         setupView = findViewById(R.id.bottombar_setup);
         homeView.setSelected(true);
         //点击事件：如果点击任何一个view,addFragment 并将其设为selected，其余设为非selected
+        //还要给home fragment 传温湿度数据
         homeView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -388,9 +390,7 @@ public class MainActivity extends AppCompatActivity {
                     bundle.putInt("humidity" ,myBinder.getHumidity());
                     homeFragment.setArguments(bundle);
                 }
-
                 addFragment(homeFragment);
-
                 titleBar.setText("首页");
 
             }
@@ -407,13 +407,24 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //还要给Setup fragment 传是否连上了蓝牙
         setupView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                SetupFragment setupFragment = new SetupFragment();
+                Bundle bundle = new Bundle();
+                if(bleDevice == null)
+                    bundle.putInt("connect",0);
+                else if( !BleManager.getInstance().isConnected(bleDevice))
+                    bundle.putInt("connect",0);
+                else
+                    bundle.putInt("connect",1);
+
+                setupFragment.setArguments(bundle);
                 Log.d(TAG, "onClick: setupView");
                 selected();
                 setupView.setSelected(true);
-                addFragment(new SetupFragment());
+                addFragment(setupFragment);
                 titleBar.setText("设置");
             }
         });

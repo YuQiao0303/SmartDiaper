@@ -12,6 +12,26 @@
         style="@style/MyTitleBar"
         android:text="首页"
         />
+    <!--&lt;!&ndash;显示蓝牙连接状态&ndash;&gt;-->
+    <!--<TextView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:background="@color/lightBlue"-->
+        <!--android:gravity="right"-->
+        <!--android:paddingRight="10dp"-->
+        <!--android:paddingBottom="10dp"-->
+        <!--android:textColor="@color/darkBlue"-->
+        <!--android:text="蓝牙未连接"/>-->
+    <!--<TextView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:gravity="right"-->
+        <!--android:paddingRight="10dp"-->
+        <!--android:background="@color/lightBlue"-->
+        <!--android:textColor="@color/darkBlue"-->
+        <!--android:text="重连蓝牙"-->
+        <!--android:paddingBottom="10dp"-->
+        <!--/>-->
     <!--fragment-->
     <FrameLayout
         android:id="@+id/main_content"

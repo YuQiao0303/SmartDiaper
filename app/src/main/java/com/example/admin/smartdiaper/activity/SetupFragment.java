@@ -3,6 +3,7 @@ package com.example.admin.smartdiaper.activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import android.os.Handler;
 import android.os.Message;
 import android.support.v14.preference.SwitchPreference;
 import android.support.v7.preference.ListPreference;
@@ -21,7 +22,10 @@ public class SetupFragment extends PreferenceFragmentCompat implements SharedPre
     ListPreference ringMusic;
     SeekBarPreference ringVolume;
     SwitchPreference savePower;
+    Preference bleStatus;
+    Preference bleReconnect;
 
+    public static Handler handler;
 
     public SetupFragment() {
         // Required empty public constructor
@@ -37,6 +41,32 @@ public class SetupFragment extends PreferenceFragmentCompat implements SharedPre
         ringMusic = (ListPreference)findPreference("ring_music");
         ringVolume = (SeekBarPreference)findPreference("ring_volume");
         savePower = (SwitchPreference)findPreference("save_power");
+        bleStatus = findPreference("ble_status");
+        bleReconnect = findPreference("ble_reconnect");
+
+        //初始化显示是否连上了蓝牙
+        Bundle bundle = getArguments();
+        if(bundle.getInt("connect") == 1)
+            bleStatus.setSummary("已连接");
+        else
+            bleStatus.setSummary("未连接");
+
+        //设置更改连接状态的handler
+        handler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                switch (msg.what) {
+                    case (Constant.MSG_DISCONNECTION): {
+                        bleStatus.setSummary("未连接");
+                        break;
+                    }
+                    case (Constant.MSG_CONNECTION): {
+                        bleStatus.setSummary("已连接");
+                        break;
+                    }
+                }
+            }
+        };
 
     }
 

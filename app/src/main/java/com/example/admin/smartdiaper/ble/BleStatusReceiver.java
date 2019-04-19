@@ -4,10 +4,17 @@ import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Message;
+import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.clj.fastble.data.BleDevice;
+import com.example.admin.smartdiaper.MyApplication;
+import com.example.admin.smartdiaper.activity.HomeFragment;
+import com.example.admin.smartdiaper.activity.SetupFragment;
 import com.example.admin.smartdiaper.constant.Constant;
 //import com.example.admin.smartdiaper.utils.DateUtil;
 //import com.example.admin.smartdiaper.utils.SharedPreferencesUtils;
@@ -33,6 +40,11 @@ public class BleStatusReceiver extends BroadcastReceiver {
             //连接上了
             Log.d(TAG, "onReceive: "+"蓝牙已连接");
             Toast.makeText(context,"蓝牙已连接", Toast.LENGTH_LONG).show();
+            //将设置中的蓝牙连接状态置为已连接
+            Message msg = new Message();
+            msg.what = Constant.MSG_CONNECTION;
+            SetupFragment.handler.sendMessage(msg);
+
         } else if (action.equals(BluetoothDevice.ACTION_ACL_DISCONNECTED)) {
             //蓝牙连接被切断
             //SharedPreferencesUtils.setLong("lastTime", DateUtil.currentTimeFrom2000InSeconds(),context);//存储蓝牙断开的时间
@@ -42,6 +54,10 @@ public class BleStatusReceiver extends BroadcastReceiver {
             intent2.putExtra("type","sysbroadcast");
             context.startService(intent2);
 
+            //将设置中的蓝牙连接状态置为已连接
+            Message msg = new Message();
+            msg.what = Constant.MSG_DISCONNECTION;
+            SetupFragment.handler.sendMessage(msg);
         }
 //        else if(action.equals(Constant.BLE_CON_ACTION)){
 //            Log.d(TAG, "onReceive: BLE_CON_ACTION");

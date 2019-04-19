@@ -179,6 +179,8 @@ public class FindDiaperActivity extends BaseActivity {
                 deviceMac.setText("连接成功");
                 Intent intent=new Intent(FindDiaperActivity.this,MainActivity.class);
                 intent.putExtra("bleDevice",bleDevice);  //把bleDevice 传给MainActivity
+
+                //启动MainActivity
                 startActivity(intent);
             }
 
