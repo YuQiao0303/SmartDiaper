@@ -36,5 +36,7 @@ public interface Constant {
     int TIME = 0;
     int MODE = 1;
 
+    //music ids & names
+    String [] musicNames = {"Maid with the Flaxen Hair","Kalimba","Sleep Away"};
 
 }

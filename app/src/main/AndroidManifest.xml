@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.admin.smartdiaper">
+
     <!-- 蓝牙访问权限 -->
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <!--震动权限-->
+    <!-- 震动权限 -->
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
@@ -17,13 +18,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.MainActivity"
-            android:launchMode="singleTop">
-
-
-
-        </activity>
-        <activity android:name=".activity.FindDiaperActivity"
+        <activity
+            android:name=".activity.MainActivity"
+            android:launchMode="singleTop"></activity>
+        <activity
+            android:name=".activity.FindDiaperActivity"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,13 +30,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <service
             android:name=".ble.BleService"
             android:enabled="true"
-            android:exported="true"/>
-        <service android:name=".ble.BleConnectService"
+            android:exported="true" />
+        <service
+            android:name=".ble.BleConnectService"
             android:enabled="true"
-            android:exported="true"/>
+            android:exported="true" />
+
+        <activity android:name=".activity.ChooseMusicActivity"
+            android:launchMode="singleTop"
+            android:theme="@style/ActivityDialog" />
     </application>
 
 </manifest>

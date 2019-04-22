@@ -48,8 +48,8 @@ public class TimeAdapter extends RecyclerView.Adapter{
         private TextView rightTxt;
 
         private RelativeLayout rlTitle;
-        private View vLine;
-        private int position;
+//        private View vLine;
+//        private int position;
         private TimelineItem timelineItem;
         private ImageView dotImage;
         private TextView leftTxt;
@@ -57,14 +57,15 @@ public class TimeAdapter extends RecyclerView.Adapter{
         public ViewHolder(View itemView) {
             super(itemView);
             rlTitle = (RelativeLayout) itemView.findViewById(R.id.rl_title);
-            vLine = itemView.findViewById(R.id.v_line);
+//            vLine = itemView.findViewById(R.id.v_line);
             rightTxt = (TextView) itemView.findViewById(R.id.right_txt);
             leftTxt = itemView.findViewById(R.id.left_txt);
             dotImage = (ImageView)itemView.findViewById(R.id.dot_image);
         }
 
+
         public void setPosition(int position) {
-            this.position = position;
+//            this.position = position;
             timelineItem = data.get(position);
 
             //显示在左边还是右边

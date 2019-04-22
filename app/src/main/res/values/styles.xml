@@ -14,13 +14,20 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name = "MyTitleBar">
+    <!--dialog activity-->
+    <style name="ActivityDialog" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowBackground">@null</item> <!--必须设置该属性为空，才能占满屏幕，否则会有边界空白-->
+        <item name="android:textColor">@color/gray</item>
+        <item name="android:windowFrame">@null</item>
+    </style>
 
+    <!-- title bar -->
+    <style name = "MyTitleBar">
         <item name = "android:layout_width">match_parent</item>
         <item name = "android:layout_height">wrap_content</item>
-
         <item name = "android:gravity">center</item>
-
         <item name = "android:textColor">@color/darkBlue</item>
         <item name = "android:background">@color/lightBlue</item>
         <item name = "android:paddingTop">5dp</item>

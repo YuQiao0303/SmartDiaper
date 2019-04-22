@@ -80,10 +80,12 @@ public class SetupFragment extends PreferenceFragmentCompat implements SharedPre
                 Message msg = new Message();
                 msg.what = Constant.MSG_RECONNET;
                 MainActivity.handler.sendMessage(msg);
-//                BleManager.getInstance().disconnectAllDevice();
-//                Intent intent=new Intent(MyApplication.getContext(),FindDiaperActivity.class);
-//                startActivity(intent);
                 break;
+            }
+            case "my_ring_music" :{
+                //弹出选择铃声对话框
+                Intent intent = new Intent(MyApplication.getContext(), ChooseMusicActivity.class);
+                startActivity(intent);
             }
         }
 

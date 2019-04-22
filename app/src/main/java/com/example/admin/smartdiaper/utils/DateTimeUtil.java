@@ -75,23 +75,28 @@ public class DateTimeUtil {
         Calendar yesterday  =Calendar.getInstance();
         yesterday.setTime(dateToday);
         yesterday.add(Calendar.DATE,-1);
+        Log.d(TAG, "time2ShowString: yesterday.get(Calendar.DATE)) = " + yesterday.get(Calendar.DATE));
         //前天
         Calendar oneDayAgo  =Calendar.getInstance();
         oneDayAgo.setTime(dateToday);
-        yesterday.add(Calendar.DATE,-2);
+        oneDayAgo.add(Calendar.DATE,-2);
+        Log.d(TAG, "time2ShowString: oneDayAgo.get(Calendar.DATE)) = " + oneDayAgo.get(Calendar.DATE));
         //明天
         Calendar tomorrow  =Calendar.getInstance();
-        oneDayAgo.setTime(dateToday);
-        yesterday.add(Calendar.DATE,1);
+        tomorrow.setTime(dateToday);
+        tomorrow.add(Calendar.DATE,1);
+        Log.d(TAG, "time2ShowString: tomorrow.get(Calendar.DATE)) = " + tomorrow.get(Calendar.DATE));
         //后天
         Calendar oneDayLater  =Calendar.getInstance();
-        oneDayAgo.setTime(dateToday);
-        yesterday.add(Calendar.DATE,2);
+        oneDayLater.setTime(dateToday);
+        oneDayLater.add(Calendar.DATE,2);
+        Log.d(TAG, "time2ShowString: oneDayLater.get(Calendar.DATE)) = " + oneDayLater.get(Calendar.DATE));
+
 
         if(targetCalendar.get(Calendar.YEAR) != nowCalendar.get(Calendar.YEAR) )
         {
             //不是同一年，直接显示
-//            Log.d(TAG, "time2ShowString: different year");
+            Log.d(TAG, "time2ShowString: different year");
             return time2ShowString(time);
         }
         if(targetCalendar.get(Calendar.DATE) == today.get(Calendar.DATE))
