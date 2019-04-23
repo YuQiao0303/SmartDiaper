@@ -19,7 +19,7 @@ public class Reminder {
     //铃声音频相关
     private static SoundPool soundPool;
     private static int soundIdInPool[] = {0, 0, 0};  //sound[0] 是test_music0 加载后在sound pool中的id
-    private static int playingIdInPool;  //正在播放的音频在音频池中的id
+    private static int playingIdInPool = -1;  //正在播放的音频在音频池中的id
     private static boolean[] loadFinished = {false, false, false};  //loadFinished[0]是test_music0.mp3是否加载完毕
     private static boolean playSuccess = false;
     private static float volumeF;
@@ -126,7 +126,8 @@ public class Reminder {
      * 停止播放当前音乐
      */
     public static void stopRing(){
-        soundPool.stop(playingIdInPool);
+        if(playingIdInPool != -1)
+            soundPool.stop(playingIdInPool);
         Log.d(TAG, "stopRing  " + playingIdInPool);
     }
 
@@ -134,7 +135,8 @@ public class Reminder {
      * 暂停播放当前音乐
      */
     public static void pauseRing(){
-        soundPool.pause(playingIdInPool);
+        if(playingIdInPool != -1)
+            soundPool.pause(playingIdInPool);
         Log.d(TAG, "pauseRing  " + playingIdInPool);
     }
 }

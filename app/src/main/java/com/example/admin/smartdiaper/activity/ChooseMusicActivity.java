@@ -142,9 +142,14 @@ public class ChooseMusicActivity extends AppCompatActivity implements View.OnCli
                 finish();
                 Log.d(TAG, "onClick: 更改preferebce");
                 Log.d(TAG, "onClick: id = " + preferences.getInt("my_ring_music", 0));
+
+                //关闭音乐
+                Reminder.stopRing();
                 break;
             }
             case R.id.cancel_btn:
+                //关闭音乐
+                Reminder.stopRing();
                 finish();
                 break;
             default:

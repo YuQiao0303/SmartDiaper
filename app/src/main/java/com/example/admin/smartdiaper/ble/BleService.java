@@ -257,10 +257,7 @@ public class BleService extends Service {
             {
                 sendStoreMessage(peeTime);
             }
-
         }
-
-
     }
 
     /**
