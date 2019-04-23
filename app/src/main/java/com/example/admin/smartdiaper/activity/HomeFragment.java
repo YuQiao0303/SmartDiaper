@@ -134,7 +134,9 @@ public class HomeFragment extends Fragment{
                     }
                     case(Constant.MSG_PEE_HOME):{
                         lastTime.setText(DateTimeUtil.time2ShowString(((long[])msg.obj)[0]));
-                        nextTime.setText(DateTimeUtil.time2ShowString(((long[])msg.obj)[1]));
+                        long nextTimeLong = ((long[])msg.obj)[1];
+                        if(nextTimeLong != -1)
+                            nextTime.setText(DateTimeUtil.time2ShowString(nextTimeLong));
                         break;
                     }
                     default:break;

@@ -49,6 +49,9 @@ import com.example.admin.smartdiaper.constant.Constant;
 import com.example.admin.smartdiaper.db.MyDatabaseHelper;
 import com.example.admin.smartdiaper.remind.Reminder;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
@@ -124,6 +127,7 @@ public class MainActivity extends AppCompatActivity {
                     //排尿：数据库增加数据，发提醒，弹框，震动，响铃
                     case (Constant.MSG_PEE_MAIN):{
                         addRecord((long)msg.obj);//增加一条数据（数据库 & adapter 的list中 同步增加） //此处时间是1970开始至今的时间
+                        long nextTime = predict();//添加或更新预测数据
                         sendNotification();   //发通知
                         showAlertDialog();   //弹框提醒
                         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
@@ -143,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
                         //更改HomeFragment ui
                         Message msg1 = new Message();
                         msg1.what = Constant.MSG_PEE_HOME;
-                        long[] times ={(long)msg.obj,(long)msg.obj};
+                        long[] times ={(long)msg.obj,nextTime};
 
                         msg1.obj = times;
                         HomeFragment.handler.sendMessage(msg1);
@@ -359,28 +363,6 @@ public class MainActivity extends AppCompatActivity {
         values.put("time", time);
         db.insert(Constant.DB_RECORD_TABLE_NAME,null,values);
         values.clear();
-
-        //添加或更新预测数据
-        Cursor cursorPrediction = db.query(Constant.DB_PREDICTION_TABLE_NAME, null, null, null, null, null, "time desc");
-        if (cursorPrediction.moveToFirst() ==false)   //如果还没有预测数据，则添加
-        {
-            for(int i=0;i<Constant.PREDICTION_NUM;i++) {
-                values.put("time", time);
-                db.insert(Constant.DB_PREDICTION_TABLE_NAME,  null,values);
-                values.clear();
-                Log.d(TAG, "addRecord: 添加 " +i + "条预测数据");
-            }
-        }
-        else{
-            //更新预测数据
-            for(int i=0;i<Constant.PREDICTION_NUM;i++) {
-                values.put("time", time);
-                db.update(Constant.DB_PREDICTION_TABLE_NAME,  values,"id= ?",new String[] {""+(i+1)}); //不要漏了问号
-                values.clear();
-                Log.d(TAG, "addRecord: 更新 " +i + "条预测数据");
-            }
-        }
-
         //list操作
         //如果此时timelineFratment 正在显示中，就手动增加一条数据，否则，下次进入HomeFragment的时候会自动调用OnCreateView 方法中的initData
         if(timelineView.isSelected())
@@ -390,6 +372,67 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * 预测算法
+     * @return  返回预测的下次排尿时间
+     */
+    private long predict(){
+        List<Long> prediction = new ArrayList<Long>();
+        prediction.clear();
+        SQLiteDatabase db = dbHelper.getWritableDatabase();   //获得该数据库实例
+        ContentValues values = new ContentValues();
+        long diff = 0;
+        //获得历史记录数据
+        Cursor cursor = db.rawQuery("select count(id) , MAX(time) , MIN(time) from " + Constant.DB_RECORD_TABLE_NAME ,null);
+        if (cursor.moveToFirst())
+        {
+            int count = cursor.getInt(0);
+            if(count ==0)   // 如果还没数据
+            {
+                return -1;
+            }
+            else if (count == 1)  //如果只有一条数据，也先return试试吧
+            {
+                return -1;
+            }
+            else
+            {  //数据大于等于两条，可以预测，算出每次排尿的平均间隔diff
+                long maxTime = cursor.getLong(1);
+                long minTime = cursor.getLong(2);
+                diff = (maxTime - minTime)/(count - 1);
+                Log.d(TAG, "predict: diff = " + diff);
+
+                //加入预测数据库
+                Cursor cursorPrediction = db.rawQuery("select count(id)  from " + Constant.DB_PREDICTION_TABLE_NAME ,null);
+                if (cursorPrediction.moveToFirst())
+                {
+                    if(cursor.getInt(1) == 0)  //预测数据库暂无数据，需要insert新数据
+                    {
+                        for(int i=0;i<Constant.PREDICTION_NUM;i++) {
+                            values.put("time", maxTime + (i + 1) * diff);
+                            db.insert(Constant.DB_PREDICTION_TABLE_NAME, null, values);
+                            values.clear();
+                            Log.d(TAG, "addRecord: 添加 " + i + "条预测数据");
+                        }
+                    }
+                    else    //update
+                    {
+                        for(int i=0;i<Constant.PREDICTION_NUM;i++) {
+                            values.put("time", maxTime + (i + 1) * diff);
+                            db.update(Constant.DB_PREDICTION_TABLE_NAME,  values,"id= ?",new String[] {""+(i+1)}); //不要漏了问号
+                            values.clear();
+                            Log.d(TAG, "addRecord: 更新 " +i + "条预测数据");
+                        }
+                    }
+                    return maxTime + diff;
+                }
+            }
+        }
+        else{   //读取数据库失败
+            Log.d(TAG, "predict: 预测时，读取record table 失败");
+        }
+        return -1;
+    }
     /**-----------------------------------------------------------------------
      *                       设置Fragment相关
      *----------------------------------------------------------------------*/
