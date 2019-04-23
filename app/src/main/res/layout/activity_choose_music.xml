@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_gravity="center"
     android:layout_width="wrap_content"
-    android:layout_height="match_parent"
+    android:layout_height="270dp"
     android:background="@drawable/dialog_bg">
     <RelativeLayout
         android:layout_gravity="center"
@@ -21,8 +21,6 @@
             android:paddingRight="10dp"
             android:paddingTop="25dp">
 
-
-
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -31,43 +29,70 @@
                 android:textColor="@color/darkBlue"
                 android:textSize="30dp"/>
 
-            <ScrollView
+
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="200dp">
-                <!--<RadioGroup-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content">-->
-                    <!--<android.support.v7.widget.RecyclerView-->
-                        <!--android:id="@+id/music_recycler_view"-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="wrap_content">-->
-                    <!--</android.support.v7.widget.RecyclerView>-->
-                <!--</RadioGroup>-->
-
-
-            </ScrollView>
-            <RadioButton
-                android:id="@+id/music_name"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:text="@+string/ring_music_default"
-                android:textColor="@color/gray"
-                android:textSize="15sp" />
-            <ImageView
-                android:id="@+id/play_pause"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:paddingRight="10dp"
-                android:paddingLeft="10dp"
-                android:src="@drawable/record_dot" />
+                android:padding="20dp"
+                >
+                <RadioGroup
+                    android:id="@+id/radio_group"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <RadioButton
+                        android:id="@+id/music_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:text="@string/ring_music1"
+                        android:textColor="@color/gray"
+                        android:textSize="15sp" />
+                    <RadioButton
+                        android:id="@+id/music_name2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:text="@string/ring_music2"
+                        android:textColor="@color/gray"
+                        android:textSize="15sp" />
+                    <RadioButton
+                        android:id="@+id/music_name3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:text="@string/ring_music3"
+                        android:textColor="@color/gray"
+                        android:textSize="15sp" />
+                </RadioGroup>
+
+                <ImageView
+                    android:id="@+id/play_pause"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_alignParentRight="true"
+                    android:src="@mipmap/ic_play" />
+                <ImageView
+                    android:id="@+id/play_pause2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_below="@id/play_pause"
+                    android:layout_alignParentRight="true"
+                    android:src="@mipmap/ic_play" />
+                <ImageView
+                    android:id="@+id/play_pause3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_below="@id/play_pause2"
+                    android:layout_alignParentRight="true"
+                    android:src="@mipmap/ic_play" />
+            </RelativeLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
-                android:gravity="right">
+                android:gravity="right"
+                android:paddingBottom="10dp">
 
                 <TextView
                     android:id="@+id/ok_btn"

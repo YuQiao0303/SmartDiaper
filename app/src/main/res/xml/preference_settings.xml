@@ -46,7 +46,7 @@
 
         <Preference
             android:key="my_ring_music"
-            android:title="我的铃声！！！！！"
+            android:title="铃声"
             android:summary="@string/ring_music_default"
             android:dialogTitle="请选择提醒铃声"
             android:entries="@array/ring_music_name"
@@ -54,16 +54,6 @@
             android:defaultValue="0"
             android:icon="@mipmap/ic_music"/>
 
-        <ListPreference
-            android:key="ring_music"
-            android:title="铃声"
-            android:summary="@string/ring_music_default"
-            android:dialogTitle="请选择提醒铃声"
-            android:entries="@array/ring_music_name"
-            android:entryValues="@array/ring_music_id"
-            android:defaultValue="0"
-            android:icon="@mipmap/ic_music"
-            />
 
 
         <me.zhanghai.android.seekbarpreference.SeekBarPreference

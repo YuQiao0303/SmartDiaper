@@ -85,6 +85,8 @@ public class TimeAdapter extends RecyclerView.Adapter{
             //时间节点图片
             if(timelineItem.isPredicted())
                 dotImage.setImageResource(R.drawable.prediction_dot);
+            else
+                dotImage.setImageResource(R.drawable.record_dot);
 
         }
     }

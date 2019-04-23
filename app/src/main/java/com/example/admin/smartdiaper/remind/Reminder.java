@@ -127,6 +127,14 @@ public class Reminder {
      */
     public static void stopRing(){
         soundPool.stop(playingIdInPool);
-        Log.d(TAG, "onDestroy: stop  " + playingIdInPool);
+        Log.d(TAG, "stopRing  " + playingIdInPool);
+    }
+
+    /**
+     * 暂停播放当前音乐
+     */
+    public static void pauseRing(){
+        soundPool.pause(playingIdInPool);
+        Log.d(TAG, "pauseRing  " + playingIdInPool);
     }
 }

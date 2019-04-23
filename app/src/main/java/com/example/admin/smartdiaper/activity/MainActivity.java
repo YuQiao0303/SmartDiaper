@@ -134,7 +134,8 @@ public class MainActivity extends AppCompatActivity {
                         if (preferences.getBoolean("ring", true)) {
                             int volume = preferences.getInt("ring_volume", 100);
                             Log.d(TAG, "handleMessage: get volume from preference:" + volume);
-                            int index = Integer.valueOf(preferences.getString("ring_music", "0")).intValue();
+//                            int index = Integer.valueOf(preferences.getString("my_ring_music", "0")).intValue();
+                            int index =preferences.getInt("my_ring_music", 0);
                             Log.d(TAG, "handleMessage: get musicId from preference:" + index);
                             Reminder.ring(index, volume);  //响铃
                         }

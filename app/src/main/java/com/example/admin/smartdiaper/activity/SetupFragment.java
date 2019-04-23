@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.v14.preference.SwitchPreference;
 import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
@@ -23,7 +24,7 @@ import me.zhanghai.android.seekbarpreference.SeekBarPreference;
 public class SetupFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = "SetupFragment";
     SwitchPreference ring;
-    ListPreference ringMusic;
+    Preference ringMusic;
     SeekBarPreference ringVolume;
     SwitchPreference savePower;
     Preference bleStatus;
@@ -42,13 +43,11 @@ public class SetupFragment extends PreferenceFragmentCompat implements SharedPre
         addPreferencesFromResource(R.xml.preference_settings);
 
         ring = (SwitchPreference)findPreference("ring");
-        ringMusic = (ListPreference)findPreference("ring_music");
+        ringMusic = (Preference)findPreference("my_ring_music");
         ringVolume = (SeekBarPreference)findPreference("ring_volume");
         savePower = (SwitchPreference)findPreference("save_power");
         bleStatus = findPreference("ble_status");
         bleReconnect = findPreference("ble_reconnect");
-
-
 
 
     }
@@ -121,9 +120,24 @@ public class SetupFragment extends PreferenceFragmentCompat implements SharedPre
         ringVolume.setEnabled(ring.isChecked());
 
         //setSummary
-        ringMusic.setSummary(ringMusic.getEntry());
-        ringVolume.setSummary(ringVolume.getProgress()+"%");
 
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
+        switch(preferences.getInt("my_ring_music",0)){
+            case(0):{
+                ringMusic.setSummary(R.string.ring_music1);
+                break;
+            }
+            case(1):{
+                ringMusic.setSummary(R.string.ring_music2);
+                break;
+            }
+            case(2):{
+                ringMusic.setSummary(R.string.ring_music3);
+                break;
+            }
+        }
+
+        ringVolume.setSummary(ringVolume.getProgress()+"%");
     }
 
     @Override
