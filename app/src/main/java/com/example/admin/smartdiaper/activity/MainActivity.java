@@ -158,6 +158,14 @@ public class MainActivity extends AppCompatActivity {
                     }
                     case (Constant.MSG_STORE):{
                         addRecord((long)msg.obj);//增加一条数据（数据库 & adapter 的list中 同步增加） //此处时间是1970开始至今的时间
+                        long nextTime = predict();//添加或更新预测数据
+                        //更改HomeFragment ui
+                        Message msg1 = new Message();
+                        msg1.what = Constant.MSG_PEE_HOME;
+                        long[] times ={(long)msg.obj,nextTime};
+
+                        msg1.obj = times;
+                        HomeFragment.handler.sendMessage(msg1);
                         break;
                     }
                     case (Constant.MSG_SET_MODE): {
