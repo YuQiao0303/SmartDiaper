@@ -7,6 +7,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.ComponentName;
 import android.content.ContentValues;
@@ -45,6 +46,7 @@ import com.example.admin.smartdiaper.ble.BleConnectService;
 //import com.example.admin.smartdiaper.ble.BleService;
 import com.example.admin.smartdiaper.ble.BleService;
 import com.example.admin.smartdiaper.ble.BleStatusReceiver;
+
 import com.example.admin.smartdiaper.constant.Constant;
 import com.example.admin.smartdiaper.db.MyDatabaseHelper;
 import com.example.admin.smartdiaper.remind.Reminder;
@@ -61,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
     TextView disconnect;
     private TextView titleBar;
     private BleStatusReceiver bleStatusReceiver;
+
     public static Handler handler;  //处理BleService传来的提醒
     //数据库
     private MyDatabaseHelper dbHelper;
@@ -344,6 +347,10 @@ public class MainActivity extends AppCompatActivity {
 
         registerReceiver(bleStatusReceiver, connectedFilter);
         registerReceiver(bleStatusReceiver, disConnectedFilter);
+
+
+        IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+        registerReceiver(bleStatusReceiver, filter);
     }
 
 
@@ -544,6 +551,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy(){
         Reminder.releaseSoundPool();
+        BleManager.getInstance().disconnectAllDevice();
+        unregisterReceiver(bleStatusReceiver);
         super.onDestroy();
     }
 }

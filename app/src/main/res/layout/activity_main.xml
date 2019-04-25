@@ -12,17 +12,7 @@
         style="@style/MyTitleBar"
         android:text="首页"
         />
-    <!--蓝牙未连接-->
-    <TextView
-        android:id="@+id/not_connected"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/lightBlue"
-        android:gravity="center"
 
-        android:paddingBottom="10dp"
-        android:textColor="@color/deepOrange"
-        android:text="智能纸尿裤蓝牙设备尚未连接！ \n请在“设置”中连接"/>
 
     <!--fragment-->
     <FrameLayout
@@ -31,5 +21,16 @@
         android:layout_height="0dp"
         android:layout_weight="1">
     </FrameLayout>
+    <!--蓝牙未连接-->
+    <TextView
+        android:id="@+id/not_connected"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/lightBlue"
+        android:gravity="center"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:textColor="@color/deepOrange"
+        android:text="智能纸尿裤蓝牙设备尚未连接！ \n请在“设置”中连接"/>
     <include layout="@layout/bottombar" />
 </LinearLayout>

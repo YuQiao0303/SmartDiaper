@@ -1,5 +1,6 @@
 package com.example.admin.smartdiaper.ble;
 
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -55,6 +56,37 @@ public class BleStatusReceiver extends BroadcastReceiver {
             Message msg2 = new Message();
             msg2.what = Constant.MSG_DISCONNECTION;
             MainActivity.handler.sendMessage(msg2);
+        }
+        else if(action.equals(BluetoothAdapter.ACTION_STATE_CHANGED))
+        {
+            int blueState = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, 0);
+            switch (blueState) {
+                case BluetoothAdapter.STATE_ON://蓝牙被打开
+                    Log.d(TAG, "onReceive: 蓝牙重新被打开，正在尝试重连");
+                    Toast.makeText(context,"蓝牙重新被打开，正在尝试重连", Toast.LENGTH_LONG).show();
+//                    Intent intent2=new Intent(context, BleConnectService.class);
+//                    intent2.putExtra("type","sysbroadcast");
+//                    context.startService(intent2);
+
+                    Message msg = new Message();
+                    msg.what = Constant.MSG_RECONNET;
+                    MainActivity.handler.sendMessage(msg);
+
+                    break;
+                case BluetoothAdapter.STATE_OFF://蓝牙被关闭:
+                    Log.d(TAG, "onReceive: 蓝牙被手动关闭");
+                    Toast.makeText(context,"蓝牙被手动关闭，请您打开手机的蓝牙功能后，在“设置”中重连蓝牙！", Toast.LENGTH_LONG).show();
+                    Message msg2 = new Message();
+                    msg2.what = Constant.MSG_DISCONNECTION;
+                    MainActivity.handler.sendMessage(msg2);
+                    break;
+                case BluetoothAdapter.STATE_TURNING_ON://蓝牙正在打开:
+
+                    break;
+                case BluetoothAdapter.STATE_TURNING_OFF://蓝牙正在关闭:
+
+                    break;
+            }
         }
 //        else if(action.equals(Constant.BLE_CON_ACTION)){
 //            Log.d(TAG, "onReceive: BLE_CON_ACTION");
