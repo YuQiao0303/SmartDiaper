@@ -45,6 +45,7 @@ public class TimeLineFragment extends Fragment{
 
     //UI 控件
     private static TextView noRecordYet;
+
     public TimeLineFragment() {
         // Required empty public constructor
     }
