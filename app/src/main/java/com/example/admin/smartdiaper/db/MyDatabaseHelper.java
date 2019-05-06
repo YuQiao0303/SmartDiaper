@@ -86,4 +86,8 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         return db.update(Constant.DB_RECORD_TABLE_NAME,values,"id = ?",new String[] {(""+ id)});
     }
 
+    //清空预测表
+    public long clearPrediction(SQLiteDatabase db){
+        return db.delete(Constant.DB_PREDICTION_TABLE_NAME,null,null);
+    }
 }

@@ -405,7 +405,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * 预测算法
+     * 预测算法：此方法仅进行数据库操作，不改ui
      * @return  返回预测的下次排尿时间
      */
     public static long predict(){
@@ -420,12 +420,9 @@ public class MainActivity extends AppCompatActivity {
         if (cursor.moveToFirst())
         {
             int count = cursor.getInt(0);
-            if(count ==0)   // 如果还没数据
+            if(count == 0 || count == 1)   // 如果还没数据或只有一条数据，无法预测
             {
-                return -1;
-            }
-            else if (count == 1)  //如果只有一条数据，也先return试试吧
-            {
+                dbHelper.clearPrediction(db);
                 return -1;
             }
             else

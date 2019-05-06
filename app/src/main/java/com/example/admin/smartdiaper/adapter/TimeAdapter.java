@@ -130,7 +130,7 @@ public class TimeAdapter extends RecyclerView.Adapter{
      * @param itemPosition   被长按的条目的position
      */
     private void showPopWindows(View view , final int itemPosition){
-        if(itemPosition <3) return;
+        if(list.get(itemPosition).isPredicted() == true) return;
         final View itemView = view;
 
         List<String> dataList = new ArrayList<>();
@@ -186,12 +186,8 @@ public class TimeAdapter extends RecyclerView.Adapter{
         long nextTime = MainActivity.predict();
         //在list中修改时间
         TimeLineFragment.getData();
-        //发送message
-        Message msg = new Message();
-        msg.what = Constant.MSG_UPDATE_TIMES_IN_HOME;
-        long[] times ={list.get(3).getTime(),nextTime};  //第三个数据是上次排尿时间
-        msg.obj = times;
-        HomeFragment.handler.sendMessage(msg);
+        //在homefragment修改时间
+        modifyHomeFragmentTimes(nextTime);
 
         //弹出snackBar
         Log.d(TAG, "onItemClick: 删除");
@@ -207,12 +203,8 @@ public class TimeAdapter extends RecyclerView.Adapter{
                         long nextTime = MainActivity.predict();
                         //更新TimeLineFragment的ui
                         TimeLineFragment.getData();
-                        //发送message
-                        Message msg = new Message();
-                        msg.what = Constant.MSG_UPDATE_TIMES_IN_HOME;
-                        long[] times ={list.get(3).getTime(),nextTime};  //第三个数据是上次排尿时间
-                        msg.obj = times;
-                        HomeFragment.handler.sendMessage(msg);
+                        //在homefragment修改时间
+                        modifyHomeFragmentTimes(nextTime);
                     }
                 })
                 .show();
@@ -256,16 +248,30 @@ public class TimeAdapter extends RecyclerView.Adapter{
                         long nextTime = MainActivity.predict();
                         //在list中修改时间
                         TimeLineFragment.getData();
-                        //发送message
-                        Message msg = new Message();
-                        msg.what = Constant.MSG_UPDATE_TIMES_IN_HOME;
-                        long[] times ={list.get(3).getTime(),nextTime};  //第三个数据是上次排尿时间
-                        msg.obj = times;
-                        HomeFragment.handler.sendMessage(msg);
+                        //在homefragment修改时间
+                        modifyHomeFragmentTimes(nextTime);
                     }
                 },
                 mHour, mMinute,true);
         if(!((MainActivity)context).isFinishing())
             timePickerDialog.show();
+    }
+
+    /**
+     * 发送message给HomeFragment，更改其中上次和预计下次排尿事件的ui
+     * @param nextTime
+     */
+    private void modifyHomeFragmentTimes(long nextTime){
+        //发送message
+        long lastTime;
+        if(list.size() == 0) lastTime = -1;
+        else if(list.size()<4) lastTime = list.get(0).getTime();
+        else lastTime = list.get(3).getTime();
+
+        Message msg = new Message();
+        msg.what = Constant.MSG_UPDATE_TIMES_IN_HOME;
+        long[] times ={lastTime,nextTime};  //第三个数据是上次排尿时间
+        msg.obj = times;
+        HomeFragment.handler.sendMessage(msg);
     }
 }

@@ -145,10 +145,17 @@ public class HomeFragment extends Fragment{
                         break;
                     }
                     case(Constant.MSG_UPDATE_TIMES_IN_HOME):{
-                        lastTime.setText(DateTimeUtil.time2ShowString(((long[])msg.obj)[0]));
+                        long lastTimeLong = ((long[])msg.obj)[0];
+                        if(lastTimeLong != -1)
+                            lastTime.setText(DateTimeUtil.time2ShowString(lastTimeLong));
+                        else
+                            lastTime.setText(R.string.no_data_yet_short);
+
                         long nextTimeLong = ((long[])msg.obj)[1];
                         if(nextTimeLong != -1)
                             nextTime.setText(DateTimeUtil.time2ShowString(nextTimeLong));
+                        else
+                            nextTime.setText(R.string.no_data_yet_short);
                         break;
                     }
                     default:break;
