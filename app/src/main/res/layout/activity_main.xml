@@ -6,21 +6,31 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.MainActivity">
-    <!--title bar-->
-    <TextView
-        android:id="@+id/title_bar"
-        style="@style/MyTitleBar"
-        android:text="首页"
-        />
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:theme="@style/ToolbarTheme"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:title="智能婴儿监护系统"/>
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tab_layout"
+        android:background="@color/colorPrimary"
+        app:tabTextColor="@color/colorAccent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <!--fragment-->
-    <FrameLayout
-        android:id="@+id/main_content"
+    </android.support.design.widget.TabLayout>
+    <android.support.v4.view.ViewPager
+        android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
-    </FrameLayout>
+    </android.support.v4.view.ViewPager>
+
+
     <!--蓝牙未连接-->
     <TextView
         android:id="@+id/not_connected"
@@ -32,5 +42,5 @@
         android:paddingBottom="10dp"
         android:textColor="@color/deepOrange"
         android:text="智能纸尿裤蓝牙设备尚未连接！ \n请在“设置”中连接"/>
-    <include layout="@layout/bottombar" />
+
 </LinearLayout>

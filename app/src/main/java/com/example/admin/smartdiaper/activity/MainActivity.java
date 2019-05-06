@@ -26,10 +26,12 @@ import android.os.IBinder;
 import android.os.Message;
 
 import android.preference.PreferenceManager;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -42,6 +44,7 @@ import com.clj.fastble.data.BleDevice;
 
 import com.example.admin.smartdiaper.MyApplication;
 import com.example.admin.smartdiaper.R;
+import com.example.admin.smartdiaper.adapter.MyFragmentAdapter;
 import com.example.admin.smartdiaper.ble.BleConnectService;
 //import com.example.admin.smartdiaper.ble.BleService;
 import com.example.admin.smartdiaper.ble.BleService;
@@ -52,18 +55,21 @@ import com.example.admin.smartdiaper.db.MyDatabaseHelper;
 import com.example.admin.smartdiaper.remind.Reminder;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
-
+    //tab layout 管理/控件
+    public static final String []sTitle = new String[]{"首页","时间轴","设置"};
+    private int icons []= {R.drawable.btm_home,R.drawable.btm_service,R.drawable.btm_person};
+    private TabLayout mTabLayout;
+    private ViewPager mViewPager;
+    private TextView disconnect;
+    //蓝牙
     private BleDevice bleDevice;//蓝牙设备
-    private View homeView, timelineView, setupView; //bottom bar中的三个图标
-    TextView disconnect;
-    private TextView titleBar;
     private BleStatusReceiver bleStatusReceiver;
-
     public static Handler handler;  //处理BleService传来的提醒
     //数据库
     private MyDatabaseHelper dbHelper;
@@ -103,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
         Intent bindIntent = new Intent(MainActivity.this, BleService.class);
         bindService(bindIntent, connection, Context.BIND_AUTO_CREATE);
         //设置三个Fragment
-        setView();
+        initView();
 
 
 
@@ -228,7 +234,12 @@ public class MainActivity extends AppCompatActivity {
 
                 disconnect.setVisibility(View.GONE);
             }
+            else
+                disconnect.setVisibility(View.VISIBLE);
         }
+        else
+            disconnect.setVisibility(View.VISIBLE);
+
     }
     /**
      * -----------------------------------------------------------------------
@@ -380,11 +391,10 @@ public class MainActivity extends AppCompatActivity {
         values.clear();
         //list操作
         //如果此时timelineFratment 正在显示中，就手动增加一条数据，否则，下次进入HomeFragment的时候会自动调用OnCreateView 方法中的initData
-        if(timelineView.isSelected())
-        {
-            TimeLineFragment.addRecordInList(time);
-            Log.d(TAG, "addTestData: 成功添加数据！");
-        }
+
+        TimeLineFragment.addRecordInList(time);
+        Log.d(TAG, "addTestData: 成功添加数据！");
+
     }
 
     /**
@@ -452,90 +462,52 @@ public class MainActivity extends AppCompatActivity {
      *                       设置Fragment相关
      *----------------------------------------------------------------------*/
 
-    private void setView(){
-        titleBar = findViewById(R.id.title_bar);
+    private void initView(){
+        mViewPager = findViewById(R.id.view_pager);
+        mTabLayout = findViewById(R.id.tab_layout);
+
+        mTabLayout.addTab(mTabLayout.newTab().setText(sTitle[0]));
+        mTabLayout.addTab(mTabLayout.newTab().setText(sTitle[1]));
+        mTabLayout.addTab(mTabLayout.newTab().setText(sTitle[2]));
+
+        mTabLayout.setupWithViewPager(mViewPager);
+
+        //add icons : must do it after setupWithViewPager
+        for (int i = 0; i < mTabLayout.getTabCount(); i++) {
+            mTabLayout.getTabAt(i).setIcon(icons[i]);
+        }
+        List<Fragment> fragments = new ArrayList<>();
+
+        //homeFragment
+        HomeFragment homeFragment = new HomeFragment();
+        if(myBinder!=null)
+        {
+            Bundle bundle = new Bundle();
+            bundle.putInt("temperature" ,myBinder.getTemperature());
+            bundle.putInt("humidity" ,myBinder.getHumidity());
+            homeFragment.setArguments(bundle);
+        }
+        fragments.add(homeFragment);
+        //timeline fragment
+        fragments.add(new TimeLineFragment());
 
 
+        //setup fragment
+        SetupFragment setupFragment = new SetupFragment();
+        Bundle bundle = new Bundle();
+        if(bleDevice == null)
+            bundle.putInt("connect",0);
+        else if( !BleManager.getInstance().isConnected(bleDevice))
+            bundle.putInt("connect",0);
+        else
+            bundle.putInt("connect",1);
+        setupFragment.setArguments(bundle);
+        fragments.add(setupFragment);
 
-        addFragment(new HomeFragment());//默认是homefragment
-        homeView = findViewById(R.id.bottombar_home);
-        timelineView = findViewById(R.id.bottombar_timeline);
-        setupView = findViewById(R.id.bottombar_setup);
-        homeView.setSelected(true);
-        //点击事件：如果点击任何一个view,addFragment 并将其设为selected，其余设为非selected
-        //还要给home fragment 传温湿度数据
-        homeView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d(TAG, "onClick: homeView");
-                selected();
-                homeView.setSelected(true);
-
-                HomeFragment homeFragment  = new HomeFragment();
-                if(myBinder!=null)
-                {
-                    Bundle bundle = new Bundle();
-                    bundle.putInt("temperature" ,myBinder.getTemperature());
-                    bundle.putInt("humidity" ,myBinder.getHumidity());
-                    homeFragment.setArguments(bundle);
-                }
-                addFragment(homeFragment);
-                titleBar.setText("首页");
-
-            }
-        });
-
-        timelineView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d(TAG, "onClick: timelineView");
-                selected();
-                timelineView.setSelected(true);
-                addFragment(new TimeLineFragment());
-                titleBar.setText("时间轴");
-            }
-        });
-
-        //还要给Setup fragment 传是否连上了蓝牙
-        setupView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SetupFragment setupFragment = new SetupFragment();
-                Bundle bundle = new Bundle();
-                if(bleDevice == null)
-                    bundle.putInt("connect",0);
-                else if( !BleManager.getInstance().isConnected(bleDevice))
-                    bundle.putInt("connect",0);
-                else
-                    bundle.putInt("connect",1);
-
-                setupFragment.setArguments(bundle);
-                Log.d(TAG, "onClick: setupView");
-                selected();
-                setupView.setSelected(true);
-                addFragment(setupFragment);
-                titleBar.setText("设置");
-            }
-        });
-    }
-    private void selected(){
-        homeView.setSelected(false);
-        timelineView.setSelected(false);
-        setupView.setSelected(false);
+        MyFragmentAdapter adapter = new MyFragmentAdapter(getSupportFragmentManager(),fragments, Arrays.asList(sTitle));
+        mViewPager.setAdapter(adapter);
     }
 
-    public void addFragment(Fragment fragment) {
-        //获取到FragmentManager，在V4包中通过getSupportFragmentManager，
-        //在系统中原生的Fragment是通过getFragmentManager获得的。
-        FragmentManager FMs = getSupportFragmentManager();
-        //fig2.开启一个事务，通过调用beginTransaction方法开启。
-        FragmentTransaction MfragmentTransactions = FMs.beginTransaction();
-        //把自己创建好的fragment创建一个对象
-        //向容器内加入Fragment，一般使用add或者replace方法实现，需要传入容器的id和Fragment的实例。
-        MfragmentTransactions.replace(R.id.main_content,fragment);
-        //提交事务，调用commit方法提交。
-        MfragmentTransactions.commit();
-    }
 
     /**
      * 按返回键，回到home而不销毁当前activity

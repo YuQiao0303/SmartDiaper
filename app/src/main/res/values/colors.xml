@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#ceecf7</color>
-    <color name="colorPrimaryDark">#ceecf7</color>
+    <color name="colorPrimaryDark">@color/colorPrimary</color>
     <color name="colorAccent">#1e5396</color>
 
     <!--my colors-->
@@ -9,6 +9,7 @@
     <color name="darkBlue">#1e5396</color>
     <color name="lightOrange">#fd9b28</color>
     <color name="deepOrange">#e63b13</color>
+
     <!--时间轴-->
     <color name="gray">#888888</color>
 </resources>
