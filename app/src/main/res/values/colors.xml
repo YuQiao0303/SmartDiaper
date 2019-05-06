@@ -5,8 +5,7 @@
     <color name="colorAccent">#1e5396</color>
 
     <!--my colors-->
-    <!--<color name="lightBlue">@color/colorPrimary</color>-->
-    <!--<color name="darkBlue">@color/colorAccent</color>-->
+
     <color name="lightOrange">#fd9b28</color>
     <color name="deepOrange">#e63b13</color>
 
