@@ -1,5 +1,4 @@
 package com.example.admin.smartdiaper.activity;
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -24,8 +23,6 @@ import com.example.admin.smartdiaper.bean.TimelineItem;
 import com.example.admin.smartdiaper.constant.Constant;
 import com.example.admin.smartdiaper.db.MyDatabaseHelper;
 
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,13 +62,15 @@ public class TimeLineFragment extends Fragment{
 
         //time line
         RecyclerView rlView = view.findViewById(R.id.activity_rlview);
-        //初始化数据
-        initData();
+
 
         // recyclerview绑定适配器
         rlView.setLayoutManager(new LinearLayoutManager(MyApplication.getContext()));
         adapter = new TimeAdapter(list);
         rlView.setAdapter(adapter);
+
+        //初始化数据
+        getData();
 
         //判断是否有数据
         noRecordYet = view.findViewById(R.id.no_record_yet);
@@ -98,31 +97,9 @@ public class TimeLineFragment extends Fragment{
     /**-----------------------------------------------------------------------
      *                       数据相关
      *----------------------------------------------------------------------*/
-    public static void addRecordInList(long time)
-    {
-//        //移除最上面的预测数据
-//        if(list.size()>= Constant.PREDICTION_NUM) {
-//            for (int i = 0; i < Constant.PREDICTION_NUM; i++) {
-//                list.remove(0);
-//            }
-//        }
-//
-//        //添加新的历史记录
-//        list.add(0,new TimelineItem(time, false,""));
-//        //添加新的预测数据
-//        for(int i=0;i<Constant.PREDICTION_NUM;i++)
-//            list.add(0,new TimelineItem(time, true,""));
-//
-//        //设置暂无数据的提示语不可见
-//        noRecordYet.setVisibility(View.GONE);
 
-        initData();
-        //更新listView
-        adapter.notifyDataSetChanged();
-    }
-
-    private static void initData() {
-        Log.d(TAG, "initData: ");
+    public static void getData() {
+        Log.d(TAG, "getData: ");
         list.clear();
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cursorPrediction = db.query(Constant.DB_PREDICTION_TABLE_NAME, null, null, null, null, null, "time desc");
@@ -140,7 +117,7 @@ public class TimeLineFragment extends Fragment{
             } while (cursorPrediction.moveToNext());
         }
         else
-            Log.d(TAG, "initData: else!!!!!!!!!!!!");
+            Log.d(TAG, "getData: else!!!!!!!!!!!!");
         cursorPrediction.close();
 
         // 查询DB_RECORD_NAME表中所有的数据
@@ -158,6 +135,15 @@ public class TimeLineFragment extends Fragment{
             } while (cursor.moveToNext());
         }
         cursor.close();
+        //更新listView
+        adapter.notifyDataSetChanged();
+        //判断是否有数据
+        if(noRecordYet != null) {
+            if (list.size() == 0) //若无数据，就显示暂无数据
+                noRecordYet.setVisibility(View.VISIBLE);
+            else
+                noRecordYet.setVisibility(View.GONE);
+        }
     }
 
 }

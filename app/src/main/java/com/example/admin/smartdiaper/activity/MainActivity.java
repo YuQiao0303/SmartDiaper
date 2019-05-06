@@ -137,6 +137,7 @@ public class MainActivity extends AppCompatActivity {
                     case (Constant.MSG_PEE_MAIN):{
                         addRecord((long)msg.obj);//增加一条数据（数据库 & adapter 的list中 同步增加） //此处时间是1970开始至今的时间
                         long nextTime = predict();//添加或更新预测数据
+
                         sendNotification();   //发通知
                         showAlertDialog();   //弹框提醒
                         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
@@ -160,11 +161,14 @@ public class MainActivity extends AppCompatActivity {
 
                         msg1.obj = times;
                         HomeFragment.handler.sendMessage(msg1);
+                        //更新Timeline fragment 的ui
+                        TimeLineFragment.getData();
                         break;
                     }
                     case (Constant.MSG_STORE):{
                         addRecord((long)msg.obj);//增加一条数据（数据库 & adapter 的list中 同步增加） //此处时间是1970开始至今的时间
                         long nextTime = predict();//添加或更新预测数据
+                        TimeLineFragment.getData(); //更新Timeline fragment 的ui
                         //更改HomeFragment ui
                         Message msg1 = new Message();
                         msg1.what = Constant.MSG_PEE_HOME;
@@ -186,6 +190,8 @@ public class MainActivity extends AppCompatActivity {
                             Log.d(TAG, "handleMessage: myBinder is fine");
                             myBinder.setSavePowerMode();
                         }
+                        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
+
                         break;
                     }
                     case(Constant.MSG_CONNECTION):{
@@ -392,7 +398,7 @@ public class MainActivity extends AppCompatActivity {
         //list操作
         //如果此时timelineFratment 正在显示中，就手动增加一条数据，否则，下次进入HomeFragment的时候会自动调用OnCreateView 方法中的initData
 
-        TimeLineFragment.addRecordInList(time);
+
         Log.d(TAG, "addTestData: 成功添加数据！");
 
     }
@@ -402,6 +408,7 @@ public class MainActivity extends AppCompatActivity {
      * @return  返回预测的下次排尿时间
      */
     private long predict(){
+        Log.d(TAG, "predict: ");
         List<Long> prediction = new ArrayList<Long>();
         prediction.clear();
         SQLiteDatabase db = dbHelper.getWritableDatabase();   //获得该数据库实例
@@ -431,7 +438,7 @@ public class MainActivity extends AppCompatActivity {
                 Cursor cursorPrediction = db.rawQuery("select count(id)  from " + Constant.DB_PREDICTION_TABLE_NAME ,null);
                 if (cursorPrediction.moveToFirst())
                 {
-                    if(cursor.getInt(1) == 0)  //预测数据库暂无数据，需要insert新数据
+                    if(cursorPrediction.getInt(0) == 0)  //预测数据库暂无数据，需要insert新数据
                     {
                         for(int i=0;i<Constant.PREDICTION_NUM;i++) {
                             values.put("time", maxTime + (i + 1) * diff);
@@ -450,6 +457,10 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                     return maxTime + diff;
+                }
+                else
+                {
+                    Log.d(TAG, "predict: 读取预测数据个数失败");
                 }
             }
         }

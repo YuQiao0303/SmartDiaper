@@ -26,7 +26,7 @@
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
                 android:text="请选择铃声"
-                android:textColor="@color/darkBlue"
+                android:textColor="@color/colorAccent"
                 android:textSize="30dp"/>
 
 
@@ -102,7 +102,7 @@
                     android:paddingRight="10dp"
                     android:gravity="right"
                     android:text="确认"
-                    android:textColor="@color/darkBlue"
+                    android:textColor="@color/colorAccent"
                     />
                 <TextView
                     android:id="@+id/cancel_btn"
@@ -112,7 +112,7 @@
                     android:layout_gravity="center_horizontal"
                     android:text="取消"
                     android:paddingRight="10dp"
-                    android:textColor="@color/darkBlue"
+                    android:textColor="@color/colorAccent"
                     />
             </LinearLayout>
 

@@ -138,6 +138,10 @@ public class BleService extends Service {
     }
 
 
+    /**
+     * 将时间和模式写入硬件
+     * @param timeOrMode
+     */
     private void setDiaperTimeAndMode(final int timeOrMode){
         //获取模式
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());

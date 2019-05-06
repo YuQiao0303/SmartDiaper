@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
@@ -30,6 +31,15 @@ public class HomeFragment extends Fragment{
     public static Handler handler;  //处理BleService传来的更新温湿度ui消息
     //数据库
     private MyDatabaseHelper dbHelper;
+    //widgets
+    public static Switch savePower ;
+    private TextView currentTemperature ;
+    private TextView currentHumidity ;
+    private RelativeLayout currentState ;
+    //variables
+    private long temperature;
+    private long humidity;
+
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -55,17 +65,18 @@ public class HomeFragment extends Fragment{
         final TextView lastTimeTxt = lastTimeTimeLine.findViewById(R.id.left_txt);
         final TextView nextTimeTxt = nextTimeTimeLine.findViewById(R.id.left_txt);
         final ImageView nextTimeDot = nextTimeTimeLine.findViewById(R.id.dot_image);
-        final TextView currentTemperature = view.findViewById(R.id.current_temperature);
-        final TextView currentHumidity = view.findViewById(R.id.current_humidity);
-        final RelativeLayout currentState = view.findViewById(R.id.current_state);
+        currentTemperature = view.findViewById(R.id.current_temperature);
+        currentHumidity = view.findViewById(R.id.current_humidity);
+        currentState = view.findViewById(R.id.current_state);
+        savePower = view.findViewById(R.id.save_power_home);
 
-        //当前温湿度
-        Bundle bundle = getArguments();
-        if(bundle!= null)
-        {
-            currentHumidity.setText(""+bundle.getInt("humidity"));  //注意，如果直接传int会被当成resource ID 来用！
-            currentTemperature.setText(""+bundle.getInt("temperature") + " ℃");
-        }
+//        //当前温湿度
+//        Bundle bundle = getArguments();
+//        if(bundle!= null)
+//        {
+//            currentHumidity.setText(""+bundle.getInt("humidity"));  //注意，如果直接传int会被当成resource ID 来用！
+//            currentTemperature.setText(""+bundle.getInt("temperature") + " ℃");
+//        }
         //设置时间轴：点的颜色，txt显示的文字，背景颜色
         nextTimeDot.setImageResource(R.drawable.prediction_dot);
         lastTimeTxt.setText("上次排尿时间：");
@@ -128,6 +139,8 @@ public class HomeFragment extends Fragment{
             public void handleMessage(Message msg){
                 switch (msg.what){
                     case (Constant.MSG_UPDATE_TEMPERATURE_HUMIDITY):{
+                        temperature = msg.arg1;
+                        humidity = msg.arg2;
                         currentTemperature.setText(""+ msg.arg1 + " ℃");
                         currentHumidity.setText(""+ msg.arg2 );
                         break;
@@ -146,7 +159,7 @@ public class HomeFragment extends Fragment{
         };
 
         //根据是否是省电模式来决定是否显示当前温湿度
-        final Switch savePower = view.findViewById(R.id.save_power_home);
+
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
         savePower.setChecked(preferences.getBoolean("save_power",false));
         Log.d(TAG, "onCreateView: save_Power from preference+" + preferences.getBoolean("save_power",false));
@@ -188,6 +201,32 @@ public class HomeFragment extends Fragment{
                 MainActivity.handler.sendMessage(msg);
             }
         });
+
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        Log.d(TAG, "onResume: ");
+        //当前温湿度
+        currentHumidity.setText(""+humidity);  //注意，如果直接传int会被当成resource ID 来用！
+        currentTemperature.setText(""+temperature + " ℃");
+
+        //根据是否是省电模式来决定是否显示当前温湿度
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
+        savePower.setChecked(preferences.getBoolean("save_power",false));
+        Log.d(TAG, "onCreateView: save_Power from preference+" + preferences.getBoolean("save_power",false));
+        if(!savePower.isChecked())
+        {
+            //显示当前温湿度
+            currentState.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            //不显示当前温湿度
+            currentState.setVisibility(View.GONE);
+        }
+        super.onResume();
+      
     }
 }

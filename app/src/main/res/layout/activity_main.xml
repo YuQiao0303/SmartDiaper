@@ -36,7 +36,7 @@
         android:id="@+id/not_connected"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/lightBlue"
+        android:background="@color/colorPrimary"
         android:gravity="center"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
