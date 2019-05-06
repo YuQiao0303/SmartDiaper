@@ -6,6 +6,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.example.admin.smartdiaper.constant.Constant;
+import com.example.admin.smartdiaper.utils.DateTimeUtil;
+
 import static com.example.admin.smartdiaper.constant.Constant.DB_PREDICTION_TABLE_NAME;
 import static com.example.admin.smartdiaper.constant.Constant.DB_RECORD_TABLE_NAME;
 
@@ -45,25 +48,6 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_RECORD);  //
         db.execSQL(CREATE_TABLE_PREDICTION);
         Log.d(TAG, "onCreate: 建表成功！");
-//        //insert 数据
-//        ContentValues values = new ContentValues();
-//        //insert 历史记录
-//        int i;
-//        for(i = 0;i<2;i++)
-//        {
-//            values.put("time", i*1000*3600);
-//            db.insert(DB_RECORD_TABLE_NAME,null,values);
-//            values.clear();
-//        }
-//        //insert 预测数据
-//        for(i = 2;i<5;i++)
-//        {
-//            values.put("time", i*1000*3600);
-//            db.insert(DB_PREDICTION_TABLE_NAME,null,values);
-//            values.clear();
-//        }
-//
-//        Log.d(TAG, "addTestData: 成功添加数据！");
     }
 
     /**
@@ -78,6 +62,28 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(DROP_TABLE_RECORD);
         db.execSQL(DROP_TABLE_PREDICTION);
         onCreate(db);
+    }
+
+    //删
+    public long deleteById(SQLiteDatabase db, int id){
+        return db.delete(Constant.DB_RECORD_TABLE_NAME,"id = ?",new String[] {(""+ id)});
+    }
+
+    //增
+    public long addRecordInDB(SQLiteDatabase db, long time){
+        ContentValues values = new ContentValues();
+        //添加这条历史记录
+        values.put("time", time);
+        long result = db.insert(Constant.DB_RECORD_TABLE_NAME,null,values);
+        values.clear();
+        Log.d(TAG, "addTestData: 成功添加数据！");
+        return result;
+    }
+    //改
+    public long updateTime(SQLiteDatabase db,int id,long newTime){
+        ContentValues values = new ContentValues();
+        values.put("time", newTime);
+        return db.update(Constant.DB_RECORD_TABLE_NAME,values,"id = ?",new String[] {(""+ id)});
     }
 
 }

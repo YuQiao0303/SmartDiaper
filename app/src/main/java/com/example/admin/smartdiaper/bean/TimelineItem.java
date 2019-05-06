@@ -4,15 +4,25 @@ package com.example.admin.smartdiaper.bean;
 
 public class TimelineItem {
 
+    private  int id;
     private long time;
     private String title;
 
     private boolean predicted = false;
 
-    public TimelineItem(long time, boolean predicted, String title) {
+    public TimelineItem(int id, long time, boolean predicted, String title) {
+        this.id = id;
         this.title = title;
         this.predicted = predicted;
         this.time = time;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public long getTime() {

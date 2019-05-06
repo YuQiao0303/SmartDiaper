@@ -1,8 +1,12 @@
 package com.example.admin.smartdiaper.activity;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,7 +15,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
 
 
 import com.example.admin.smartdiaper.MyApplication;
@@ -25,6 +32,7 @@ import com.example.admin.smartdiaper.db.MyDatabaseHelper;
 
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 
@@ -36,12 +44,17 @@ public class TimeLineFragment extends Fragment{
     //存储列表数据
     static List<TimelineItem> list = new ArrayList<>();
     static TimeAdapter adapter;
+    public static TimeAdapter getAdapter() {
+        return adapter;
+    }
 
     //数据库
     private static MyDatabaseHelper dbHelper;
 
     //UI 控件
     private static TextView noRecordYet;
+    //
+    private Calendar calendar;
 
     public TimeLineFragment() {
         // Required empty public constructor
@@ -66,7 +79,7 @@ public class TimeLineFragment extends Fragment{
 
         // recyclerview绑定适配器
         rlView.setLayoutManager(new LinearLayoutManager(MyApplication.getContext()));
-        adapter = new TimeAdapter(list);
+        adapter = new TimeAdapter(list,getActivity());
         rlView.setAdapter(adapter);
 
         //初始化数据
@@ -79,6 +92,50 @@ public class TimeLineFragment extends Fragment{
         else
             noRecordYet.setVisibility(View.GONE);
 
+        FloatingActionButton fab = view.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //弹出DatePickerDialog
+                //注意第一个参数得是Activity哦
+                calendar = Calendar.getInstance();
+                DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(),
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                                //获取新的日期
+                                calendar.set(Calendar.YEAR,year);
+                                calendar.set(Calendar.MONTH,month);
+                                calendar.set(Calendar.DAY_OF_MONTH,dayOfMonth);
+                                //弹出timePickerDialog
+                                //注意第一个参数得是Activity哦
+                                TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(),
+                                        new TimePickerDialog.OnTimeSetListener() {
+                                            @Override
+                                            public void onTimeSet(TimePicker view, int hour, int minute) {
+                                                //获取新的时间
+                                                calendar.set(Calendar.HOUR_OF_DAY,hour);
+                                                calendar.set(Calendar.MINUTE,minute);
+                                                long newTime = calendar.getTimeInMillis();
+                                                //发消息给MainActivity
+                                                Message msg = new Message();
+                                                msg.what = Constant.MSG_STORE;
+                                                msg.obj = newTime;
+                                                MainActivity.handler.sendMessage(msg);
+                                            }
+                                        },
+                                        calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE),true);
+                                if(!getActivity().isFinishing())
+                                    timePickerDialog.show();
+                            }
+                        },
+                        calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+                if(!getActivity().isFinishing())
+                {
+                    datePickerDialog.show();
+                }
+            }
+        });
         return view;
 
     }
@@ -112,7 +169,7 @@ public class TimeLineFragment extends Fragment{
                         ("time"));
                 Log.d(TAG, "time is " + time);
                 Log.d(TAG, "id is " + id);
-                list.add(new TimelineItem(time, true,""));
+                list.add(new TimelineItem(id,time, true,""));
 
             } while (cursorPrediction.moveToNext());
         }
@@ -131,7 +188,7 @@ public class TimeLineFragment extends Fragment{
                         ("time"));
                 Log.d(TAG, "time is " + time);
                 Log.d(TAG, "id is " + id);
-                list.add(new TimelineItem(time, false,""));
+                list.add(new TimelineItem(id,time, false,""));
             } while (cursor.moveToNext());
         }
         cursor.close();

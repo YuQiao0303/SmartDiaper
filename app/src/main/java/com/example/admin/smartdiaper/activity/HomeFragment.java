@@ -13,7 +13,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
@@ -145,7 +144,7 @@ public class HomeFragment extends Fragment{
                         currentHumidity.setText(""+ msg.arg2 );
                         break;
                     }
-                    case(Constant.MSG_PEE_HOME):{
+                    case(Constant.MSG_UPDATE_TIMES_IN_HOME):{
                         lastTime.setText(DateTimeUtil.time2ShowString(((long[])msg.obj)[0]));
                         long nextTimeLong = ((long[])msg.obj)[1];
                         if(nextTimeLong != -1)

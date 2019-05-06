@@ -28,8 +28,6 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -72,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
     private BleStatusReceiver bleStatusReceiver;
     public static Handler handler;  //处理BleService传来的提醒
     //数据库
-    private MyDatabaseHelper dbHelper;
+    private static MyDatabaseHelper dbHelper;
 
 
     //绑定BleService
@@ -156,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
 
                         //更改HomeFragment ui
                         Message msg1 = new Message();
-                        msg1.what = Constant.MSG_PEE_HOME;
+                        msg1.what = Constant.MSG_UPDATE_TIMES_IN_HOME;
                         long[] times ={(long)msg.obj,nextTime};
 
                         msg1.obj = times;
@@ -171,12 +169,15 @@ public class MainActivity extends AppCompatActivity {
                         TimeLineFragment.getData(); //更新Timeline fragment 的ui
                         //更改HomeFragment ui
                         Message msg1 = new Message();
-                        msg1.what = Constant.MSG_PEE_HOME;
+                        msg1.what = Constant.MSG_UPDATE_TIMES_IN_HOME;
                         long[] times ={(long)msg.obj,nextTime};
 
                         msg1.obj = times;
                         HomeFragment.handler.sendMessage(msg1);
                         break;
+                    }
+                    case(Constant.MSG_UPDATE_RECORD):{
+
                     }
                     case (Constant.MSG_SET_MODE): {
                         Log.d(TAG, "handleMessage: MainActivity收到设置模式的消息");
@@ -407,7 +408,7 @@ public class MainActivity extends AppCompatActivity {
      * 预测算法
      * @return  返回预测的下次排尿时间
      */
-    private long predict(){
+    public static long predict(){
         Log.d(TAG, "predict: ");
         List<Long> prediction = new ArrayList<Long>();
         prediction.clear();
