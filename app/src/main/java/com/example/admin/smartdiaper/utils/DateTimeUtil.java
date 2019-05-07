@@ -32,9 +32,9 @@ public class DateTimeUtil {
         ca1970.set(1970,1,1,0,0,0);
         long diff = ca2000.getTimeInMillis() - ca1970.getTimeInMillis();
         androidTime = mcuTime * 1000  + ca2000.getTimeInMillis();
-        Log.d(TAG, "mcuTimeToAndroidTime: diff = "+ diff);
-        Log.d(TAG, "mcuTimeToAndroidTime: ca2000.getTimeInMillis() = " + ca2000.getTimeInMillis());
-        Log.d(TAG, "mcuTimeToAndroidTime: ca1970.getTimeInMillis() = " + ca1970.getTimeInMillis());
+//        Log.d(TAG, "mcuTimeToAndroidTime: diff = "+ diff);
+//        Log.d(TAG, "mcuTimeToAndroidTime: ca2000.getTimeInMillis() = " + ca2000.getTimeInMillis());
+//        Log.d(TAG, "mcuTimeToAndroidTime: ca1970.getTimeInMillis() = " + ca1970.getTimeInMillis());
         return androidTime;
     }
     /**
@@ -75,38 +75,38 @@ public class DateTimeUtil {
         Calendar yesterday  =Calendar.getInstance();
         yesterday.setTime(dateToday);
         yesterday.add(Calendar.DATE,-1);
-        Log.d(TAG, "time2ShowString: yesterday.get(Calendar.DATE)) = " + yesterday.get(Calendar.DATE));
+//        Log.d(TAG, "time2ShowString: yesterday.get(Calendar.DATE)) = " + yesterday.get(Calendar.DATE));
         //前天
         Calendar oneDayAgo  =Calendar.getInstance();
         oneDayAgo.setTime(dateToday);
         oneDayAgo.add(Calendar.DATE,-2);
-        Log.d(TAG, "time2ShowString: oneDayAgo.get(Calendar.DATE)) = " + oneDayAgo.get(Calendar.DATE));
+//        Log.d(TAG, "time2ShowString: oneDayAgo.get(Calendar.DATE)) = " + oneDayAgo.get(Calendar.DATE));
         //明天
         Calendar tomorrow  =Calendar.getInstance();
         tomorrow.setTime(dateToday);
         tomorrow.add(Calendar.DATE,1);
-        Log.d(TAG, "time2ShowString: tomorrow.get(Calendar.DATE)) = " + tomorrow.get(Calendar.DATE));
+//        Log.d(TAG, "time2ShowString: tomorrow.get(Calendar.DATE)) = " + tomorrow.get(Calendar.DATE));
         //后天
         Calendar oneDayLater  =Calendar.getInstance();
         oneDayLater.setTime(dateToday);
         oneDayLater.add(Calendar.DATE,2);
-        Log.d(TAG, "time2ShowString: oneDayLater.get(Calendar.DATE)) = " + oneDayLater.get(Calendar.DATE));
+//        Log.d(TAG, "time2ShowString: oneDayLater.get(Calendar.DATE)) = " + oneDayLater.get(Calendar.DATE));
 
 
         if(targetCalendar.get(Calendar.YEAR) != nowCalendar.get(Calendar.YEAR) )
         {
             //不是同一年，直接完整显示
-            Log.d(TAG, "time2ShowString: different year");
+//            Log.d(TAG, "time2ShowString: different year");
             return timestamp2whole(time);
         }
         if(targetCalendar.get(Calendar.DATE) == today.get(Calendar.DATE))
         {
-            Log.d(TAG, "time2ShowString: today");
+//            Log.d(TAG, "time2ShowString: today");
             return "今天 " + timestr;
         }
         else if(targetCalendar.get(Calendar.DATE) == yesterday.get(Calendar.DATE))
         {
-            Log.d(TAG, "time2ShowString: yesterday");
+//            Log.d(TAG, "time2ShowString: yesterday");
             return "昨天 " + timestr;
         }
         else if(targetCalendar.get(Calendar.DATE) == oneDayAgo.get(Calendar.DATE))

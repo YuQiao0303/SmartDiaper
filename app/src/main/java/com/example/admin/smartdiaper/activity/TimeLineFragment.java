@@ -29,6 +29,7 @@ import com.example.admin.smartdiaper.adapter.TimeAdapter;
 import com.example.admin.smartdiaper.bean.TimelineItem;
 import com.example.admin.smartdiaper.constant.Constant;
 import com.example.admin.smartdiaper.db.MyDatabaseHelper;
+import com.example.admin.smartdiaper.utils.DateTimeUtil;
 
 
 import java.util.ArrayList;
@@ -167,14 +168,14 @@ public class TimeLineFragment extends Fragment{
                         ("id"));
                 long time = cursorPrediction.getLong(cursorPrediction.getColumnIndex
                         ("time"));
-                Log.d(TAG, "time is " + time);
+                Log.d(TAG, "从数据库得到"+ id +"的预测时间： " + DateTimeUtil.time2ShowString(time));
                 Log.d(TAG, "id is " + id);
                 list.add(new TimelineItem(id,time, true,""));
 
             } while (cursorPrediction.moveToNext());
         }
         else
-            Log.d(TAG, "getData: else!!!!!!!!!!!!");
+            Log.d(TAG, "getData: 预测数据为空！");
         cursorPrediction.close();
 
         // 查询DB_RECORD_NAME表中所有的数据

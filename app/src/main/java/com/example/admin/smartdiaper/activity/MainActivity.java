@@ -51,6 +51,7 @@ import com.example.admin.smartdiaper.ble.BleStatusReceiver;
 import com.example.admin.smartdiaper.constant.Constant;
 import com.example.admin.smartdiaper.db.MyDatabaseHelper;
 import com.example.admin.smartdiaper.remind.Reminder;
+import com.example.admin.smartdiaper.utils.DateTimeUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -400,7 +401,7 @@ public class MainActivity extends AppCompatActivity {
         //如果此时timelineFratment 正在显示中，就手动增加一条数据，否则，下次进入HomeFragment的时候会自动调用OnCreateView 方法中的initData
 
 
-        Log.d(TAG, "addTestData: 成功添加数据！");
+        Log.d(TAG, "addRecord: 成功添加数据！");
 
     }
 
@@ -439,10 +440,11 @@ public class MainActivity extends AppCompatActivity {
                     if(cursorPrediction.getInt(0) == 0)  //预测数据库暂无数据，需要insert新数据
                     {
                         for(int i=0;i<Constant.PREDICTION_NUM;i++) {
+                            values.put("id",i+1);
                             values.put("time", maxTime + (i + 1) * diff);
                             db.insert(Constant.DB_PREDICTION_TABLE_NAME, null, values);
                             values.clear();
-                            Log.d(TAG, "addRecord: 添加 " + i + "条预测数据");
+                            Log.d(TAG, "predict: 添加 id = " + (i+1)+ "的预测数据 " + DateTimeUtil.time2ShowString(maxTime + (i + 1) * diff));
                         }
                     }
                     else    //update
@@ -451,7 +453,7 @@ public class MainActivity extends AppCompatActivity {
                             values.put("time", maxTime + (i + 1) * diff);
                             db.update(Constant.DB_PREDICTION_TABLE_NAME,  values,"id= ?",new String[] {""+(i+1)}); //不要漏了问号
                             values.clear();
-                            Log.d(TAG, "addRecord: 更新 " +i + "条预测数据");
+                            Log.d(TAG, "predict: 更新 id = " +(i+1) + "的预测数据 " + DateTimeUtil.time2ShowString(maxTime + (i + 1) * diff));
                         }
                     }
                     return maxTime + diff;
