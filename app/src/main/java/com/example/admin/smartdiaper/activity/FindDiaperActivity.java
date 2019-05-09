@@ -43,6 +43,8 @@ public class FindDiaperActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_find_diaper);
+        //设置状态栏黑色字体
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 
         deviceScan=findViewById(R.id.deviceResult);
         deviceMac=findViewById(R.id.deviceResult_mac);
